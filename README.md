@@ -1,4 +1,8 @@
-# Project Name
+# USB Family Tree
+
+https://github.com/cis3296s22/USBFamilyTree
+
+
 Put here a short paragraph describing your project. 
 Adding an screenshot or a mockup of your application in action would be nice.  
 
