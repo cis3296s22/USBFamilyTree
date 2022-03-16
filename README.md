@@ -1,4 +1,9 @@
-# Project Name
+# USB Family Tree
+
+Trello Board:
+
+https://trello.com/usbfamilytree
+
 Put here a short paragraph describing your project. 
 Adding an screenshot or a mockup of your application in action would be nice.  
 
