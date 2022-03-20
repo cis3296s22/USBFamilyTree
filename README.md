@@ -4,30 +4,18 @@ Trello Board:
 
 https://trello.com/usbfamilytree
 
-Put here a short paragraph describing your project. 
+
+# Short Description:
+
+This project will use JavaFX to create a mutable graph that will act as the basis for a family tree. The USB portion of this project is part of the idea that the program will be written such that the executable file can be run from an USB drive that’s plugged into a computer installed with a JDK. What this means is that all the data that the program progressively stores as the users add more information to their family tree is saved onto the USB drive and accessed by the executable file within the USB drive. The end goal is that a USB drive can be passed down through the generations, and if the drive gets too large, all of the files can be transferred to a new drive with more memory. 
+
+
 Adding an screenshot or a mockup of your application in action would be nice.  
 
 ![This is a screenshot.](images.png)
-# How to run
-Provide here instructions on how to use your application.   
-- Download the latest binary from the Release section on the right on GitHub.  
-- On the command line uncompress using
-```
-tar -xzf  
-```
-- On the command line run with
-```
-./hello
-```
-- You will see Hello World! on your terminal. 
 
 # How to contribute
 Follow this project board to know the latest status of the project: [http://...]([http://...])  
 
 ### How to build
-- Use this github repository: ... 
-- Specify what branch to use for a more stable release or for cutting edge development.  
-- Use InteliJ 11
-- Specify additional library to download if needed 
-- What file and target to compile and run. 
-- What is expected to happen when the app start. 
+To run this program you need to download all of the contents of the github repository. Within the github repo will be a file called `run.bat`. The contents of `run.bat` will be `java -jar main.jar` in one line, and double clicking this `run.bat` will make the jar file run.
