@@ -1,9 +1,11 @@
 package edu.templ.usbfamilytree;
 
+import com.google.gson.JsonSyntaxException;
+
 public class Person {
-    private String name;
-    private String dateOfBirth;
-    private String occupation;
+    public String name;
+    public String dateOfBirth;
+    public String occupation;
     public Person(){
 
     }
@@ -12,5 +14,7 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
         this.occupation = occupation;
     }
-
+    public static Person fromJson(String json) throws JsonSyntaxException {
+        return FileUtils.gson.fromJson(json, Person.class);
+    }
 }
