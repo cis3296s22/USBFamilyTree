@@ -9,21 +9,39 @@
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.DashboardController">
     <children>
-        <AnchorPane fx:id="anchorpane" onMouseClicked="#onPaneClicked" prefHeight="600.0" prefWidth="800.0" />
+        <AnchorPane fx:id="anchorpane" onMouseClicked="#onPaneClicked" prefHeight="600.0" prefWidth="800.0" style="-fx-border-style: solid; -fx-background-color: #FFFFE6;">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin></AnchorPane>
         <VBox alignment="BASELINE_CENTER" spacing="20">
             <padding>
                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
             </padding>
-            <Label fx:id="rel_output" text="RELATIONSHIP" />
+            <Label fx:id="rel_output" prefHeight="17.0" prefWidth="431.0" text="RELATIONSHIP" />
             <HBox alignment="BASELINE_CENTER" spacing="50">
                 <Button onAction="#addPerson" text="Add Node">
                     <opaqueInsets>
                         <Insets />
                     </opaqueInsets>
+               <padding>
+                  <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
+               </padding>
                 </Button>
-                <Button onAction="#deletePerson" text="Remove Node" />
-                <Button onAction="#findRelation" text="Find Relationship" />
+                <Button onAction="#deletePerson" text="Remove Node">
+               <padding>
+                  <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
+               </padding></Button>
+                <Button onAction="#findRelation" text="Find Relationship">
+               <padding>
+                  <Insets bottom="10.0" left="40.0" right="40.0" top="10.0" />
+               </padding></Button>
+            <VBox.margin>
+               <Insets />
+            </VBox.margin>
             </HBox>
+         <VBox.margin>
+            <Insets bottom="20.0" />
+         </VBox.margin>
         </VBox>
     </children>
 </VBox>

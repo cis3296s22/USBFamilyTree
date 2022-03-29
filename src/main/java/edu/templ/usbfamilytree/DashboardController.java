@@ -2,12 +2,18 @@ package edu.templ.usbfamilytree;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class DashboardController {
 
@@ -19,6 +25,17 @@ public class DashboardController {
     public void addPerson(ActionEvent event){
         //event for when the add node button is pressed
         System.out.println("User pressed " + event.getSource());
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("person-details.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Add Node");
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deletePerson(ActionEvent event){
@@ -46,10 +63,12 @@ public class DashboardController {
         circle.setFill(Color.DODGERBLUE);
         circle.setStroke(Color.BLACK);
         circle.setOnMouseClicked(this::onCircleClicked);
+//        circle.setUserData(new Person("Loser"));
         return circle;
     }
 
     private void onCircleClicked(MouseEvent event) {
+        //event for when a circle is clicked on
         System.out.println(event.getSource());
     }
 }
