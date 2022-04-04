@@ -1,5 +1,3 @@
-package edu.templ.usbfamilytree;
-
 import java.util.*;
 
 class Graph<T>
@@ -24,12 +22,24 @@ class Graph<T>
         if (!map.containsKey(destination))
             addNewVertex(destination);
 
-        map.get(source).add(destination);
-        //id of the edge is the id of the person the source is connecting to
-        source.addEdge(marital, ancestor, destination.getID());
-
-        if (marital == true) {
+        if(marital)
+        {
+            map.get(source).add(destination);
             map.get(destination).add(source);
+
+            //Node edge lists get added as well
+            source.addEdge(marital, ancestor, destination.getID());
+            destination.addEdge(marital, ancestor, source.getID());
+        }
+
+        if(ancestor)
+        {
+            //SOURCE is the ANCESTOR of DESTINATION
+            map.get(source).add(destination);
+            map.get(destination).add(source);
+
+            source.addEdge(marital, ancestor, destination.getID());
+            destination.addEdge(marital, !ancestor, source.getID());
         }
 
     }
@@ -68,5 +78,4 @@ class Graph<T>
         return (builder.toString());
     }
 }
-
 
