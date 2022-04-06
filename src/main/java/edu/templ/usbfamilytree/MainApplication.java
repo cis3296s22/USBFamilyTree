@@ -15,24 +15,6 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage){
         try{
-            System.out.println("Graph file path: " + Settings.graphPath);
-            File graph = new File(Settings.graphPath);
-            String graphJson = "";
-            if(!graph.exists()) {
-                graph.createNewFile();
-            }
-            else {
-                graphJson = FileUtils.ReadFile(graph.getPath());
-            }
-            if(!graphJson.isEmpty() && graphJson != null)
-            {
-                /** TODO
-                 * 1) Deserialize from Json string to Graph object
-                 * 2) Redraw the entire graph
-                 * Graph graph = FileUtils.<Graph>fromJson(graphJson, Graph.class);
-                 * graph.draw();
-                 */
-            }
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("dashboard-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle(applicationName);
