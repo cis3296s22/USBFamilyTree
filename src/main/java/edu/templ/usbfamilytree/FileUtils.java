@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -43,5 +45,8 @@ public class FileUtils {
     }
     public static String toJson(Object o) {
         return gson.toJson(o);
+    }
+    public static <T> T fromJson(String json, Class<T> type) throws JsonSyntaxException {
+        return gson.fromJson(json, type);
     }
 }

@@ -14,7 +14,4 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
         this.occupation = occupation;
     }
-    public static Person fromJson(String json) throws JsonSyntaxException {
-        return FileUtils.gson.fromJson(json, Person.class);
-    }
 }

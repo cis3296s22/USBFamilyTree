@@ -18,6 +18,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 
 public class DashboardController {
@@ -28,11 +29,40 @@ public class DashboardController {
     public Label rel_output;
     public AnchorPane anchorpane;
     public ContextMenu canvasMenu;
+    private String graphJson = "";
+    private Graph graph;
+    public DashboardController(){
+        try {
+            System.out.println("Graph file path: " + Settings.graphPath);
+            File file = new File(Settings.graphPath);
+            if(!file.exists()) {
+                file.createNewFile();
+
+            }
+            else {
+                graphJson = FileUtils.ReadFile(file.getPath());
+                if(!graphJson.isEmpty() && graphJson != null)
+                {
+                    graph = FileUtils.<Graph>fromJson(graphJson, Graph.class); // if it fails
+                    drawGraph(graph);
+
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     @FXML
     public void initialize() {
         populateCanvasMenu();
+        if(graph != null) drawGraph(graph);
         rel_output.setText("Welcome to USBFamilyTree");
+    }
+    private void drawGraph(Graph graph) {
+        // draw based off graph
+        System.out.println("Pretend drawing the graph");
     }
 
     private void populateCanvasMenu() {
