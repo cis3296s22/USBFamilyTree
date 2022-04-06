@@ -2,7 +2,7 @@ package edu.templ.usbfamilytree;
 
 import java.util.*;
 
-class Graph<T>
+class Graph
 {
     // creating an object of the Map class that stores the edges of the graph
     private Map<Node, List<Node>> map = new HashMap<>();
