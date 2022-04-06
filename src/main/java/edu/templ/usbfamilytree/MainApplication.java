@@ -17,15 +17,19 @@ public class MainApplication extends Application {
             Scene scene = new Scene(fxmlLoader.load());
             stage.setTitle(applicationName);
             stage.setScene(scene);
+//            stage.setMaximized(true);
             stage.show();
         } catch (Exception e){
             e.printStackTrace();
         }
-
+        System.out.println("WHY ARE YOU LIKE THIS");
     }
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
         launch();
+
+        //whenever the application is closed, it should continue from here,
+        //TODO save graph to file
     }
 }
