@@ -25,16 +25,22 @@ public class DashboardController {
     public AnchorPane anchorpane;
     public ContextMenu canvasMenu;
 
-    @FXML
+    @FXML //called when scene is first created in memory
     public void initialize() {
+        //populates a menu
         populateCanvasMenu();
         rel_output.setText("Welcome to USBFamilyTree");
     }
 
+    //function that populates a menu
     private void populateCanvasMenu() {
+        //initiate a new contextMenu
         canvasMenu = new ContextMenu();
+        //initiate a new menu item
         MenuItem item1 = new MenuItem();
-        item1.setText("Add a new node");
+        //fill in its text
+        item1.setText("Add a new person");
+        //set its onclick event
         item1.setOnAction(actionEvent -> {
             showNodeCreationStage();
         });
@@ -48,20 +54,9 @@ public class DashboardController {
         canvasMenu.getItems().addAll(item1, item2);
     }
 
-    public void addPerson(ActionEvent event) {
-        System.out.println("User pressed " + event.getSource());
-    }
-
-    public void addEdge(ActionEvent event){
-        System.out.println("User pressed " + event.getSource());
-    }
-
-    public void findRelation(ActionEvent event){
-        System.out.println("User pressed " + event.getSource());
-    }
-
     public void onMainScreenClicked(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseButton.SECONDARY){
+
             System.out.println("Right Clicked the canvas");
             xVal = mouseEvent.getX();
             yVal = mouseEvent.getY();
