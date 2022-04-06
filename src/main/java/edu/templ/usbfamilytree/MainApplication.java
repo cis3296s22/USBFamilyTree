@@ -23,11 +23,13 @@ public class MainApplication extends Application {
         } catch (Exception e){
             e.printStackTrace();
         }
-
     }
 
     public static void main(String[] args) {
         System.out.println("Hello World!");
         launch();
+
+        //whenever the application is closed, it should continue from here,
+        //TODO save graph to file
     }
 }

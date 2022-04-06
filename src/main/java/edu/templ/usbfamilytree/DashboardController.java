@@ -1,21 +1,17 @@
 package edu.templ.usbfamilytree;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -54,8 +50,9 @@ public class DashboardController {
 
     }
 
-    @FXML
+    @FXML //called when scene is first created in memory
     public void initialize() {
+        //populates a menu
         populateCanvasMenu();
         if(graph != null) drawGraph(graph);
         rel_output.setText("Welcome to USBFamilyTree");
@@ -65,10 +62,15 @@ public class DashboardController {
         System.out.println("Pretend drawing the graph");
     }
 
+    //function that populates a menu
     private void populateCanvasMenu() {
+        //initiate a new contextMenu
         canvasMenu = new ContextMenu();
+        //initiate a new menu item
         MenuItem item1 = new MenuItem();
-        item1.setText("Add a new node");
+        //fill in its text
+        item1.setText("Add a new person");
+        //set its onclick event
         item1.setOnAction(actionEvent -> {
             showNodeCreationStage();
         });
@@ -82,20 +84,9 @@ public class DashboardController {
         canvasMenu.getItems().addAll(item1, item2);
     }
 
-    public void addPerson(ActionEvent event) {
-        System.out.println("User pressed " + event.getSource());
-    }
-
-    public void addEdge(ActionEvent event){
-        System.out.println("User pressed " + event.getSource());
-    }
-
-    public void findRelation(ActionEvent event){
-        System.out.println("User pressed " + event.getSource());
-    }
-
     public void onMainScreenClicked(MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseButton.SECONDARY){
+
             System.out.println("Right Clicked the canvas");
             xVal = mouseEvent.getX();
             yVal = mouseEvent.getY();
@@ -115,7 +106,6 @@ public class DashboardController {
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
             stage.setTitle("Add Node");
-            stage.setAlwaysOnTop(true);
             stage.setOnCloseRequest(windowEvent ->{
                 System.out.println("in onclose: " + windowEvent.getEventType());
             });
