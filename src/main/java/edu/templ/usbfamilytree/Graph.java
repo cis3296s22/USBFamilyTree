@@ -9,10 +9,7 @@ class Graph
     private Map<Node, List<Node>> map = new HashMap<>();
     private int V = Integer.MAX_VALUE - 5; //number of nodes/vertices
     ArrayList<Integer>[] Adj = new ArrayList[V]; // adjacency list but in integer form for BFS
-    public Graph(){
 
-
-    }
     // the method adds a new vertex to the graph
     public void addNewVertex(Node s)
     {
@@ -166,5 +163,6 @@ class Graph
         path = path1 + path2;
         return path;
     }
+
 
 }
