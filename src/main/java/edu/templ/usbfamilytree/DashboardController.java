@@ -102,23 +102,13 @@ public class DashboardController {
 
     private void showNodeCreationStage(){
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("person-details.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            Stage stage = new Stage();
-            stage.setTitle("Add Node");
-            stage.setOnCloseRequest(windowEvent ->{
-                System.out.println("in onclose: " + windowEvent.getEventType());
-            });
-            stage.setOnHidden(windowEvent -> {
-                System.out.println("The stage was closed");
-                //will add a circle no matter what @_@
-                System.out.println("in onhidden: " + windowEvent.getEventType());
-                anchorpane.getChildren().add(createCircle());
-            });
-            stage.setScene(scene);
-            stage.show();
+            PersonController controller = PersonController.create();
+            Person p = controller.Show();
+            anchorpane.getChildren().add(createCircle());
+            Node node = new Node(p,1);
+            System.out.println(FileUtils.toJson(p));
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -127,7 +117,7 @@ public class DashboardController {
     //along with properties
     private Circle createCircle(){
         Circle circle = new Circle();
-        circle.setRadius(30);
+        circle.setRadius(Settings.CIRCLE_RADIUS);
         circle.setCenterX(xVal);
         circle.setCenterY(yVal);
         circle.setFill(Color.SILVER);
