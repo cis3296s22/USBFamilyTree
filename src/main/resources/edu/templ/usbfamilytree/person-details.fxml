@@ -9,19 +9,18 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="edu.templ.usbfamilytree.PersonController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.PersonController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="440.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Name" />
-            <TextField fx:id="nameTextField"/>
+            <TextField fx:id="nameTextField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Date of Birth" />
-            <DatePicker fx:id="birthdayDatePicker"/>
+            <DatePicker fx:id="birthdayDatePicker" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
@@ -39,7 +38,7 @@
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="250.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Occupation" />
-            <TextField fx:id="occupationTextField"/>
+            <TextField fx:id="occupationTextField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="330.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
@@ -48,7 +47,12 @@
             <ChoiceBox fx:id="choiceBox" prefWidth="150.0" />
          </children>
       </HBox>
-      <Button fx:id="submitButton" onAction="#submit" alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="127.0" text="Submit" />
+      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="390.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+         <children>
+            <Label fx:id="warningLabel" alignment="CENTER" minWidth="150.0" prefHeight="17.0" prefWidth="436.0" style="visibility: hidden;" text="Please insert a name" textFill="RED" />
+         </children>
+      </HBox>
+      <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" onAction="#submit" prefHeight="25.0" prefWidth="127.0" text="Submit" />
    </children>
    <padding>
       <Insets bottom="20.0" />
