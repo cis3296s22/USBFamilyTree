@@ -51,8 +51,8 @@ public class PersonController {
             warningLabel.setVisible(true);
         }else {
             name = nameTextField.getText();
-            if(birthdayDatePicker.getValue() != null) birthday = birthdayDatePicker.getValue().toString();
-            if(!occupationTextField.getText().isBlank())occupation = occupationTextField.getText();
+            if(birthdayDatePicker.getValue() != null){ birthday = birthdayDatePicker.getValue().toString();}
+            if(!occupationTextField.getText().isBlank()) {occupation = occupationTextField.getText();}
             Stage stage = (Stage) submitButton.getScene().getWindow();
             stage.close();
         }

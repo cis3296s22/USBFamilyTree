@@ -25,6 +25,8 @@ public class DashboardController {
 
     @FXML
     public Label rel_output;
+    @FXML
+    public Label name_label;
     public AnchorPane anchorpane;
     public ContextMenu canvasMenu;
     private String graphJson = "";
@@ -81,16 +83,19 @@ public class DashboardController {
     }
 
     public void onMainScreenClicked(MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseButton.SECONDARY){
-            xVal = mouseEvent.getX();
-            yVal = mouseEvent.getY();
-            canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
-        }
+        //whenever the screen(anchor-pane) is clicked on this event is run
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
+            //if the canvas is showing remove it from the screen
             if(canvasMenu.isShowing()){
                 canvasMenu.hide();
             }
+        }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
+            //save the location of where the user clicked on the anchor pane
+            xVal = mouseEvent.getX();
+            yVal = mouseEvent.getY();
+            //show the menu on the location clicked of the screen
+            canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
         }
     }
 
@@ -101,14 +106,14 @@ public class DashboardController {
         //Create new line (marriage/parents line only horizontal)
         Line line = new Line();
         double yCoord = firstPerson.getLayoutY()+Settings.NAME_LABEL_OFFSET+ Settings.LABEL_HEIGHT/2;
-        double startXCoord = firstPerson.getLayoutX()+Settings.LABEL_WIDTH/2;
-        double endXCoord = secondPerson.getLayoutX()+Settings.LABEL_WIDTH/2;
+        double startXCoord = firstPerson.getLayoutX()+Settings.LABEL_WIDTH;
+        double endXCoord = secondPerson.getLayoutX();
 
         line.setStartX(startXCoord);
         line.setStartY(yCoord);
         line.setEndX(endXCoord);
         line.setEndY(yCoord);
-
+        line.setStrokeWidth(2);
         //add it to parent hierarchy
         anchorpane.getChildren().add(line);
 
@@ -161,8 +166,9 @@ public class DashboardController {
     }
 
     private void onLabelClicked(MouseEvent event) {
+        //clicking on a label selects it for viewing & enables connection to another node
         if(firstPerson == null) {
-            System.out.println("first person was null so we set it to what we just clicked");
+            //pull what was clicked on and set it to currently selected label
             firstPerson = (Label) event.getSource();
             setSelected(firstPerson);
         }else{
@@ -176,7 +182,14 @@ public class DashboardController {
                 setSelected(secondPerson);
                 drawParentConnection();
             }
-
         }
+
+        //we can start changing the views on the right by looking up a node with the name and displaying the information there!
+//        if(firstPerson!= null) {
+//            name_label.setText(firstPerson.getText());
+//        }
+//        else{
+//            name_label.setText("");
+//        }
     }
 }
