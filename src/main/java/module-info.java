@@ -4,6 +4,7 @@ module edu.templ.usbfamilytree {
     requires com.google.gson;
     requires org.controlsfx.controls;
     requires org.jgrapht.core;
+    requires junit;
 
     opens edu.templ.usbfamilytree to javafx.fxml;
     exports edu.templ.usbfamilytree;
