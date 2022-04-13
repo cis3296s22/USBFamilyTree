@@ -8,4 +8,5 @@ public class Settings {
     public static String currentDirectory = System.getProperty("user.dir");
     public static String graphPath =  currentDirectory + File.separator + "graph.json";
     public static final double NAME_LABEL_OFFSET = 10.0;
+    public static final double MARITAL_EDGE_LENGTH = 100;
 }

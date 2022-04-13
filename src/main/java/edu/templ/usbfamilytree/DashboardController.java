@@ -3,6 +3,7 @@ package edu.templ.usbfamilytree;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -18,15 +19,22 @@ import java.io.IOException;
 
 public class DashboardController {
 
-
+    //saves currently clicked location
+    //when accessing a menu, this information is lost
     private double xVal, yVal;
 
-    private Label firstPerson = null, secondPerson = null;
+    //placeholder labels
+    private Label selectedLabel = null;
 
     @FXML
     public Label rel_output;
     @FXML
     public Label name_label;
+    @FXML
+    public Label occ_label;
+    @FXML
+    public Label dob_label;
+
     public AnchorPane anchorpane;
     public ContextMenu canvasMenu;
     private String graphJson = "";
@@ -99,30 +107,42 @@ public class DashboardController {
         }
     }
 
-    private void drawParentConnection() {
+    private void drawParentConnection(Label label) {
         //align parents to left YLayoutlocation
-        secondPerson.setLayoutY(firstPerson.getLayoutY());
+        label.setLayoutY(selectedLabel.getLayoutY());
 
         //Create new line (marriage/parents line only horizontal)
-        Line line = new Line();
-        double yCoord = firstPerson.getLayoutY()+Settings.NAME_LABEL_OFFSET+ Settings.LABEL_HEIGHT/2;
-        double startXCoord = firstPerson.getLayoutX()+Settings.LABEL_WIDTH;
-        double endXCoord = secondPerson.getLayoutX();
+        double y = selectedLabel.getLayoutY()+Settings.NAME_LABEL_OFFSET+ Settings.LABEL_HEIGHT/2;
+        double startX = selectedLabel.getLayoutX()+Settings.LABEL_WIDTH;
+        label.setLayoutX(startX + Settings.MARITAL_EDGE_LENGTH);
+        double endX = label.getLayoutX();
 
-        line.setStartX(startXCoord);
-        line.setStartY(yCoord);
-        line.setEndX(endXCoord);
-        line.setEndY(yCoord);
+        Line line = new Line(startX, y, endX, y);
         line.setStrokeWidth(2);
+        line.setCursor(Cursor.HAND);
+        line.setOnMouseClicked(this::onLineClicked);
         //add it to parent hierarchy
         anchorpane.getChildren().add(line);
 
         //deselect both
-        setUnselected(firstPerson);
-        setUnselected(secondPerson);
-        //reset selected nodes
-        firstPerson = null;
-        secondPerson = null;
+        setUnselected(selectedLabel);
+    }
+
+    private void onLineClicked(MouseEvent event) {
+        if(selectedLabel != null){
+            //extract current line
+            Line selectedLine = (Line)event.getSource();
+
+            //create a line
+            double startY = selectedLabel.getLayoutY();
+            double startX = selectedLabel.getLayoutX()+ Settings.LABEL_WIDTH/2;
+            double endX = ((selectedLine.getEndX() - selectedLine.getStartX() )/2) + selectedLine.getStartX();
+            double endY = selectedLine.getEndY();
+            Line line = new Line(startX, startY, endX, endY);
+            line.setStrokeWidth(2);
+            anchorpane.getChildren().add(line);
+            setUnselected(selectedLabel);
+        }
     }
 
     private void showNodeCreationStage(){
@@ -132,7 +152,7 @@ public class DashboardController {
             Person p = controller.Show();
             Node node = new Node(p,1);
             //if in the return the name is null (user clicked on X button to leave the screen, don't create a new view)
-            if(p.name != null) anchorpane.getChildren().add(createLabel(p.name));
+            if(p.name != null) anchorpane.getChildren().add(createLabel(p));
             System.out.println(FileUtils.toJson(p));
         }
         catch (Exception e) {
@@ -145,51 +165,56 @@ public class DashboardController {
     }
 
     private void setUnselected(Label label){
-        label.setBackground(new Background(new BackgroundFill(Color.SILVER, new CornerRadii(0), new Insets(0))));
+        label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
+        selectedLabel = null;
     }
 
-    private Label createLabel(String name){
+    private Label createLabel(Person person){
         Label label = new Label();
         label.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         label.setPrefWidth(Settings.LABEL_WIDTH);
         label.setPrefHeight(Settings.LABEL_HEIGHT);
         label.setFont(Font.font(16));
         label.setTextFill(Color.BLACK);
-        label.setBackground(new Background(new BackgroundFill(Color.SILVER, new CornerRadii(0), new Insets(0))));
+        label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
         label.setAlignment(Pos.BASELINE_CENTER);
 
         label.setOnMouseClicked(this::onLabelClicked);
-        label.setText(name);
+        label.setText(person.name);
         label.setLayoutX(xVal-(Settings.LABEL_WIDTH/2));
         label.setLayoutY(yVal-(Settings.LABEL_HEIGHT/2));
+        label.setUserData(person);
         return label;
     }
 
     private void onLabelClicked(MouseEvent event) {
         //clicking on a label selects it for viewing & enables connection to another node
-        if(firstPerson == null) {
+        if(selectedLabel == null) {
             //pull what was clicked on and set it to currently selected label
-            firstPerson = (Label) event.getSource();
-            setSelected(firstPerson);
+            selectedLabel = (Label) event.getSource();
+            setSelected(selectedLabel);
         }else{
-            secondPerson = (Label) event.getSource();
-            if(firstPerson == secondPerson){
-                setUnselected(firstPerson);
-                firstPerson = null;
-                secondPerson = null;
+            Label newLabel = (Label) event.getSource();
+            if(selectedLabel == newLabel){
+                //if the user clicks on the same label, we unselect
+                setUnselected(selectedLabel);
             }
             else{
-                setSelected(secondPerson);
-                drawParentConnection();
+                drawParentConnection(newLabel);
             }
         }
 
-        //we can start changing the views on the right by looking up a node with the name and displaying the information there!
-//        if(firstPerson!= null) {
-//            name_label.setText(firstPerson.getText());
-//        }
-//        else{
-//            name_label.setText("");
-//        }
+//        we can start changing the views on the right by looking up a node with the name and displaying the information there!
+        if(selectedLabel != null) {
+            Person currentPerson = (Person)selectedLabel.getUserData();
+            name_label.setText(currentPerson.name);
+            occ_label.setText(currentPerson.occupation);
+            dob_label.setText(currentPerson.dateOfBirth);
+        }
+        else{
+            name_label.setText("");
+            occ_label.setText("");
+            dob_label.setText("");
+        }
     }
 }
