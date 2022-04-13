@@ -4,71 +4,185 @@ import java.util.*;
 
 class Graph
 {
-    // creating an object of the Map class that stores the edges of the graph
-    private Map<Node, List<Node>> map = new HashMap<>();
-    public Graph(){
+    ArrayList<Node> nodes = new ArrayList<>();
+    LinkedList<LinkedList<Integer>> Adj = new LinkedList<LinkedList<Integer>>();; // adjacency list
 
-    }
-    // the method adds a new vertex to the graph
-    public void addNewVertex(Node s)
+
+    void addNode(int id)
     {
-        map.put(s, new LinkedList<Node>());
+        //node id should be same as position in arraylist
+        Node node = new Node(id);
+        nodes.add(node);
     }
 
     //marital == true means that the edge is bidirectional
     //if the edge is not marital and not ancestor it is descendant
-    public void addNewEdge(Node source, Node destination, boolean marital, boolean ancestor)
+    public void addNewEdge(int src, int dest, boolean marital, boolean ancestor)
     {
+        Node source = nodes.get(src);
+        Node destination = nodes.get(dest);
 
-        if (!map.containsKey(source))
-            addNewVertex(source);
+        //CAN UPDATE ALL THE FUNCTIONS TO ONLY NEED NODE ID
 
-        if (!map.containsKey(destination))
-            addNewVertex(destination);
+        if(marital)
+        {
 
-        map.get(source).add(destination);
-        //id of the edge is the id of the person the source is connecting to
-        source.addEdge(marital, ancestor, destination.getID());
-
-        if (marital == true) {
-            map.get(destination).add(source);
+            //Node edge lists get added as well
+            source.addEdge(marital, ancestor, destination.id);
+            destination.addEdge(marital, ancestor, source.id);
         }
 
-    }
+        if(ancestor)
+        {
+            //SOURCE is the ANCESTOR of DESTINATION
 
-
-    public void containsVertex(Node s) {
-        if (map.containsKey(s)) {
-            System.out.println("The graph contains " + s + " as a vertex.");
-        } else {
-            System.out.println("The graph does not contain " + s + " as a vertex.");
+            source.addEdge(marital, ancestor, destination.id);
+            destination.addEdge(marital, !ancestor, source.id);
         }
-    }
 
 
-    public void containsEdge(Node s, Node d) {
-        if (map.get(s).contains(d)) {
-            System.out.println("The graph has an edge between " + s + " and " + d + ".");
-        } else {
-            System.out.println("There is no edge between " + s + " and " + d + ".");
-        }
-    }
-
-    //adjacency list - write code to store nodes according to IDs
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        // foreach loop that iterates over the keys
-        for (Node v : map.keySet()) {
-            builder.append(v.toString() + ": ");
-            // foreach loop for getting the vertices
-            for (Node w : map.get(v)) {
-                builder.append(w.toString() + " ");
+        //THIS IMPLEMENTATION REQUIRES NODE IDS TO BE CUMULATIVE AND NOT SKIPPING NUMBERS
+        //integer adjacency list
+        if(Adj.size() <= source.id + 1)
+        {
+            while(Adj.size() != source.id + 1)
+            {
+                Adj.add(new LinkedList<Integer>());
             }
-            builder.append("\n");
         }
-        return (builder.toString());
+
+        if(Adj.size() < destination.id + 1)
+        {
+            while(Adj.size() != destination.id + 1)
+            {
+                Adj.add(new LinkedList<Integer>());
+            }
+        }
+
+        Adj.get(source.id).add(destination.id);
+        Adj.get(destination.id).add(source.id);
+
     }
+
+    void printadjacencylist()
+    {
+        for (int i = 0; i < Adj.size(); ++i) {
+
+            // Printing the head
+            System.out.print(i + "->");
+
+            for (int v : Adj.get(i)) {
+                // Printing the nodes
+                System.out.print(v + " ");
+            }
+
+            // Now a new lin eis needed
+            System.out.println();
+        }
+    }
+
+
+    void BFS(ArrayList<Integer> queue, boolean[] visited, int[] parent)
+    {
+        int current = queue.remove(0);
+
+        for(int i = 0; i < Adj.get(current).size(); i++)
+        {
+            int x = Adj.get(current).get(i);
+            if(!visited[x])
+            {
+                queue.add(x);
+                visited[x] = true;
+                parent[x] = current;
+            }
+        }
+    }
+
+    ArrayList Bidirectional(int start, int end)
+    {
+        ArrayList<Integer> retpath = new ArrayList<>();
+
+        boolean[] v1 = new boolean[Adj.size()];
+        boolean[] v2 = new boolean[Adj.size()];
+        int[] p1 = new int[Adj.size()];
+        int[] p2 = new int[Adj.size()];
+        for(int i = 0;i < Adj.size(); i++)
+        {
+            v1[i]=false;
+            v2[i]=false;
+            p1[i]=-1;
+            p2[i]=-1;
+        }
+
+
+        ArrayList<Integer> q1=new ArrayList<>();
+        ArrayList<Integer> q2=new ArrayList<>();
+        q1.add(start);
+        v1[start] = true;
+        q2.add(end);
+        v2[end] = true;
+        int intersect = -1;
+
+
+        while(q1.size() > 0 && q2.size() > 0)
+        {
+            BFS(q1, v1, p1);
+            BFS(q2, v2, p2);
+
+            for(int i = 0; i < Adj.size(); i++)
+            {
+                if(v1[i] && v2[i])
+                {
+                    intersect = i;
+                    break;
+                }
+            }
+
+            if(intersect != -1) //intersection is found
+            {
+                break;
+            }
+        }
+
+        if(intersect == -1)
+        {
+            System.out.println("no intersection");
+        }
+
+        int j = intersect;
+
+        while(j!=-1)
+        {
+            retpath.add(0, j);
+            j=p1[j];
+        }
+
+        j=p2[intersect];
+
+        while(j!=-1)
+        {
+            retpath.add(j);
+            j=p2[j];
+        }
+
+        System.out.println(intersect);
+        System.out.println(retpath);
+
+
+        return retpath;
+    }
+
+
+    // void getNodeEdge(int s, int d)
+    // {
+    //     Arraylist edges = Bidirectional(s, d);
+    //     String[] relationships = new String[edges.length];
+
+    //     for(int i = 0; i < edges.size() - 1; i++)
+    //     {
+
+    //     }
+    // }
+
+
 }
-
-
