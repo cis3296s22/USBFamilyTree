@@ -43,15 +43,21 @@ class Graph
 
         //THIS IMPLEMENTATION REQUIRES NODE IDS TO BE CUMULATIVE AND NOT SKIPPING NUMBERS
         //integer adjacency list
-        if(!Adj.contains(source.id))
+        if(Adj.size() <= source.id + 1)
         {
-            Adj.add(new LinkedList<Integer>());
+            while(Adj.size() != source.id + 1)
+            {
+                Adj.add(new LinkedList<Integer>());
+            }
         }
-        if(!Adj.contains(destination.id))
+
+        if(Adj.size() < destination.id + 1)
         {
-            Adj.add(new LinkedList<Integer>());
+            while(Adj.size() != destination.id + 1)
+            {
+                Adj.add(new LinkedList<Integer>());
+            }
         }
-        //ERROR WITH IT CREATING MANY MORE LINKEDLISTS THAN EXPECTED
 
         Adj.get(source.id).add(destination.id);
         Adj.get(destination.id).add(source.id);
