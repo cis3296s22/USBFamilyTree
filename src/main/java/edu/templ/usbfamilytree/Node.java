@@ -6,12 +6,17 @@ public class Node
 {
     public Person person;
     public ArrayList<Edge> edges = new ArrayList<>();
-    private int id;
+    public int id;
 
     Node(Person person, int id)
     {
         this.person = person;
         this.edges = new ArrayList<Edge>();
+        this.id = id;
+    }
+
+    Node(int id)
+    {
         this.id = id;
     }
 
