@@ -52,10 +52,10 @@
          <children>
             <ImageView fx:id="imageView" fitHeight="200.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
-                  <Insets bottom="20.0" left="70.0" top="20.0" />
+                  <Insets bottom="20.0" left="50.0" top="20.0" />
                </VBox.margin>
                <image>
-                  <Image url="@../../../no_image.jpg" />
+                  <Image url="@../../../saved_images/no_image.jpg" />
                </image>
             </ImageView>
             <HBox alignment="CENTER_LEFT" prefHeight="55.0" prefWidth="360.0">
@@ -68,7 +68,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="name_label" prefHeight="27.0" prefWidth="230.0" text="placeholder">
+                  <Label fx:id="name_label" prefHeight="27.0" prefWidth="230.0">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -91,7 +91,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="occ_label" prefHeight="27.0" prefWidth="230.0" text="placeholder">
+                  <Label fx:id="occ_label" prefHeight="27.0" prefWidth="230.0">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -111,7 +111,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="dob_label" prefHeight="27.0" prefWidth="230.0" text="placeholder">
+                  <Label fx:id="dob_label" prefHeight="27.0" prefWidth="230.0">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -131,7 +131,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="height_label" prefHeight="27.0" prefWidth="230.0" text="placeholder">
+                  <Label fx:id="height_label" prefHeight="27.0" prefWidth="230.0">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
@@ -151,7 +151,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="eye_label" prefHeight="27.0" prefWidth="230.0" text="placeholder">
+                  <Label fx:id="eye_label" prefHeight="27.0" prefWidth="230.0">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>

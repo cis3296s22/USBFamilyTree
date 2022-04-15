@@ -40,7 +40,7 @@
             <TextField fx:id="occupationTextField" />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="390.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="390.0" prefHeight="39.0" prefWidth="400.0" spacing="25.0">
          <children>
             <Label fx:id="warningLabel" alignment="CENTER" minWidth="150.0" prefHeight="17.0" prefWidth="436.0" style="visibility: hidden;" text="Please insert a name" textFill="RED" />
          </children>

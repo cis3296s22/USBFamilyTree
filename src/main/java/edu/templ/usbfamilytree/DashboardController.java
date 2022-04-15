@@ -5,7 +5,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -18,11 +17,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class DashboardController {
-    //saves currently clicked location when accessing a menu, this information is lost
-    private double xVal, yVal;
-
-    //variable for currently selected label;
-    private Label selectedLabel = null;
     @FXML
     public Label rel_output;  //relationship output
     public Label name_label;  //name label reference
@@ -34,8 +28,10 @@ public class DashboardController {
     public ImageView imageView; //image container reference
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ContextMenu canvasMenu;  //Context menu used for when right clicking on the screen to add a node
+    public ToggleButton editTButton; //Reference to toggle button in scene
 
-    public ToggleButton editTButton;
+    private double xVal, yVal;  //defined variables for saving location of last screen click
+    private Label selectedLabel = null; //defined variable for saving currently selected label
 
     private String graphJson = "";
     private Graph graph;
@@ -70,6 +66,13 @@ public class DashboardController {
         populateCanvasMenu();
         if(graph != null) drawGraph(graph);
         rel_output.setText("Welcome to USBFamilyTree");
+
+        editTButton.setOnMouseClicked(event -> {
+            if(selectedLabel != null){
+                setUnselected(selectedLabel);
+                updateSidePanel();
+            }
+        });
     }
 
     private void drawGraph(Graph graph) {
@@ -130,19 +133,21 @@ public class DashboardController {
     }
 
     private void onLineClicked(MouseEvent event) {
-        if(selectedLabel != null){
-            //extract current line
-            Line selectedLine = (Line)event.getSource();
+        if(editTButton.isSelected()){
+            if(selectedLabel != null){
+                //extract current line
+                Line selectedLine = (Line)event.getSource();
 
-            //create a line
-            double startY = selectedLabel.getLayoutY();
-            double startX = selectedLabel.getLayoutX()+ Settings.LABEL_WIDTH/2;
-            double endX = ((selectedLine.getEndX() - selectedLine.getStartX() )/2) + selectedLine.getStartX();
-            double endY = selectedLine.getEndY();
-            Line line = new Line(startX, startY, endX, endY);
-            line.setStrokeWidth(2);
-            anchorpane.getChildren().add(line);
-            setUnselected(selectedLabel);
+                //create a line
+                double startY = selectedLabel.getLayoutY();
+                double startX = selectedLabel.getLayoutX()+ Settings.LABEL_WIDTH/2;
+                double endX = ((selectedLine.getEndX() - selectedLine.getStartX() )/2) + selectedLine.getStartX();
+                double endY = selectedLine.getEndY();
+                Line line = new Line(startX, startY, endX, endY);
+                line.setStrokeWidth(2);
+                anchorpane.getChildren().add(line);
+                setUnselected(selectedLabel);
+            }
         }
     }
 
@@ -153,7 +158,7 @@ public class DashboardController {
             Person p = controller.Show();
             Node node = new Node(p,1);
             //if in the return the name is null (user clicked on X button to leave the screen, don't create a new view)
-            if(p.name != null) anchorpane.getChildren().add(createLabel(p));
+            anchorpane.getChildren().add(createLabel(p));
             System.out.println(FileUtils.toJson(p));
         }
         catch (Exception e) {
@@ -209,10 +214,23 @@ public class DashboardController {
             }
             updateSidePanel();
         }
-//            else{
-//                drawParentConnection(newLabel);
-//            }
-//        }
+        //IN EDIT MODE
+        else {
+            if (selectedLabel == null) {
+                //pull what was clicked on and set it to currently selected label
+                selectedLabel = (Label) event.getSource();
+                setSelected(selectedLabel);
+            } else {
+                Label newLabel = (Label) event.getSource();
+                if (selectedLabel == newLabel) {
+                    //if the user clicks on the same label, we unselect
+                    setUnselected(selectedLabel);
+                }
+                else{
+                    drawParentConnection(newLabel);
+                }
+            }
+        }
     }
 
     private void updateSidePanel() {
