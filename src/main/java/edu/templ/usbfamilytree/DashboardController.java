@@ -113,9 +113,13 @@ public class DashboardController {
 
     private void drawParentConnection(Label label) { // marital only?
         //align parents to left YLayoutlocation
-        Node node1 = (Node)selectedLabel.getUserData();
-        Node node2 = (Node)label.getUserData();
+        Node node1 = (Node)selectedLabel.getUserData(); // parent 1
+        Node node2 = (Node)label.getUserData(); // parent 2
         graph.addNewEdge(node1.id, node2.id, Edge.Relationship.marital);
+        ParentContainer parentContainer = new ParentContainer();
+        parentContainer.addParent(node1);
+        parentContainer.addParent(node2);
+
         System.out.println(FileUtils.toJson(graph));
         label.setLayoutY(selectedLabel.getLayoutY());
 
@@ -129,7 +133,8 @@ public class DashboardController {
         line.setStrokeWidth(2);
         line.setCursor(Cursor.HAND);
         line.setOnMouseClicked(this::onLineClicked);
-        line.setUserData(0);
+        line.setUserData(parentContainer);
+
         //add it to parent hierarchy
         anchorpane.getChildren().add(line);
 
@@ -139,12 +144,18 @@ public class DashboardController {
 
     private void onLineClicked(MouseEvent event) {
         if(editTButton.isSelected()){
-            if(selectedLabel != null){
+            if(selectedLabel != null){ // the child
                 //extract current line
                 Line selectedLine = (Line)event.getSource();
+                ParentContainer parentContainer = (ParentContainer) selectedLine.getUserData();
+                Node child = (Node)selectedLabel.getUserData();
 
-                int childNum = (int)selectedLine.getUserData();
-                selectedLine.setUserData(childNum+1);
+                for (Node parent: parentContainer.parents) {
+                    graph.addNewEdge(parent.id, child.id, Edge.Relationship.ancestor);
+                }
+                System.out.println(FileUtils.toJson(graph));
+                int childNum = parentContainer.getChildIndex();
+                //selectedLine.setUserData(childNum+1);
                 System.out.println(childNum);
                 //create a line
                 double startY = selectedLabel.getLayoutY();
