@@ -4,10 +4,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -36,6 +34,8 @@ public class DashboardController {
     public ImageView imageView; //image container reference
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ContextMenu canvasMenu;  //Context menu used for when right clicking on the screen to add a node
+
+    public ToggleButton editTButton;
 
     private String graphJson = "";
     private Graph graph;
@@ -190,32 +190,53 @@ public class DashboardController {
 
     private void onLabelClicked(MouseEvent event) {
         //clicking on a label selects it for viewing & enables connection to another node
-        if(selectedLabel == null) {
-            //pull what was clicked on and set it to currently selected label
-            selectedLabel = (Label) event.getSource();
-            setSelected(selectedLabel);
-        }else{
-            Label newLabel = (Label) event.getSource();
-            if(selectedLabel == newLabel){
-                //if the user clicks on the same label, we unselect
-                setUnselected(selectedLabel);
+        if(!editTButton.isSelected()) {
+            if (selectedLabel == null) {
+                //pull what was clicked on and set it to currently selected label
+                selectedLabel = (Label) event.getSource();
+                setSelected(selectedLabel);
+            } else {
+                Label newLabel = (Label) event.getSource();
+                if (selectedLabel == newLabel) {
+                    //if the user clicks on the same label, we unselect
+                    setUnselected(selectedLabel);
+                }
+                else{
+                    setUnselected(selectedLabel);
+                    setSelected(newLabel);
+                    selectedLabel = newLabel;
+                }
             }
-            else{
-                drawParentConnection(newLabel);
-            }
+            updateSidePanel();
         }
+//            else{
+//                drawParentConnection(newLabel);
+//            }
+//        }
+    }
 
-//        we can start changing the views on the right by looking up a node with the name and displaying the information there!
+    private void updateSidePanel() {
         if(selectedLabel != null) {
             Person currentPerson = (Person)selectedLabel.getUserData();
             name_label.setText(currentPerson.name);
             occ_label.setText(currentPerson.occupation);
             dob_label.setText(currentPerson.dateOfBirth);
+            eye_label.setText("insert person.eyeColor");
+            height_label.setText("insert person.height");
+//            imageView.setImage();
+            mediaButton.setOnMouseClicked(event -> {
+
+            });
         }
         else{
             name_label.setText("");
             occ_label.setText("");
             dob_label.setText("");
+            eye_label.setText("");
+            height_label.setText("");
+            mediaButton.setOnMouseClicked(event -> {
+                //do nothing
+            });
         }
     }
 }

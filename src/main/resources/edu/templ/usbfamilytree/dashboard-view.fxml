@@ -35,6 +35,11 @@
                            <Insets left="150.0" right="150.0" />
                         </HBox.margin>
                      </Label>
+                     <HBox>
+                        <children>
+                           <ToggleButton fx:id="editTButton" mnemonicParsing="false" prefWidth="100.0" text="Edit Mode" />
+                        </children>
+                     </HBox>
                   </children>
                </HBox>
                <VBox.margin>
