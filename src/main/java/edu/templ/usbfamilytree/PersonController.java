@@ -14,7 +14,6 @@ import javafx.stage.Stage;
 import java.time.format.DateTimeFormatter;
 
 public class PersonController {
-    private Person person;
     private String name, birthday, occupation;
 
     static Scene scene;

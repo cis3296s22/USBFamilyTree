@@ -37,7 +37,7 @@
                      </Label>
                      <HBox>
                         <children>
-                           <ToggleButton fx:id="editTButton" mnemonicParsing="false" prefWidth="100.0" text="Edit Mode" />
+                           <ToggleButton fx:id="editTButton" mnemonicParsing="false" onAction="#toggleButtonPressed" prefWidth="100.0" text="Edit Mode" />
                         </children>
                      </HBox>
                   </children>

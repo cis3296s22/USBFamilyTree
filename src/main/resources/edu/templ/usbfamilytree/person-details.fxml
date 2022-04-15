@@ -7,34 +7,46 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.PersonController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.PersonController">
    <children>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="440.0" spacing="25.0">
+      <Label text="Add a Family Member">
+         <font>
+            <Font size="24.0" />
+         </font>
+         <VBox.margin>
+            <Insets top="30.0" />
+         </VBox.margin>
+      </Label>
+      <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="440.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Name" />
             <TextField fx:id="nameTextField" />
          </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
       </HBox>
-      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="60.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Date of Birth" />
             <DatePicker fx:id="birthdayDatePicker" />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Eye Color" />
             <TextField />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+      <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Height (inches)" />
             <TextField />
          </children>
       </HBox>
-      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="250.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
+      <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="250.0" prefHeight="60.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Occupation" />
             <TextField fx:id="occupationTextField" />
