@@ -55,6 +55,11 @@ public class DashboardController {
                     drawGraph(graph);
 
                 }
+                else
+                {
+                    graph = new Graph();
+
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,6 +113,10 @@ public class DashboardController {
 
     private void drawParentConnection(Label label) {
         //align parents to left YLayoutlocation
+        Node node1 = (Node)selectedLabel.getUserData();
+        Node node2 = (Node)label.getUserData();
+        graph.addNewEdge(node1.id, node2.id, true, false);
+        System.out.println(FileUtils.toJson(graph));
         label.setLayoutY(selectedLabel.getLayoutY());
 
         //Create new line (marriage/parents line only horizontal)
@@ -158,10 +167,10 @@ public class DashboardController {
             PersonController controller = PersonController.create();
             //returned from creation stage, everything except name can be null
             Person p = controller.Show();
-            Node node = new Node(p,1);
+            Node node =  graph.addNode(p);
             //if in the return the name is null (user clicked on X button to leave the screen, don't create a new view)
-            if (p.name != null) {anchorpane.getChildren().add(createLabel(p));}
-            System.out.println(FileUtils.toJson(p));
+            if (p.name != null) {anchorpane.getChildren().add(createLabel(node));}
+            System.out.println(FileUtils.toJson(node));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -177,7 +186,7 @@ public class DashboardController {
         selectedLabel = null;
     }
 
-    private Label createLabel(Person person){
+    private Label createLabel(Node node){
         Label label = new Label();
         label.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         label.setPrefWidth(Settings.LABEL_WIDTH);
@@ -188,10 +197,10 @@ public class DashboardController {
         label.setAlignment(Pos.BASELINE_CENTER);
 
         label.setOnMouseClicked(this::onLabelClicked);
-        label.setText(person.name);
+        label.setText(node.person.name);
         label.setLayoutX(xVal-(Settings.LABEL_WIDTH/2));
         label.setLayoutY(yVal-(Settings.LABEL_HEIGHT/2));
-        label.setUserData(person);
+        label.setUserData(node);
         return label;
     }
 
@@ -237,7 +246,8 @@ public class DashboardController {
 
     private void updateSidePanel() {
         if(selectedLabel != null) {
-            Person currentPerson = (Person)selectedLabel.getUserData();
+            Node node = (Node)selectedLabel.getUserData();
+            Person currentPerson = node.person;
             name_label.setText(currentPerson.name);
             occ_label.setText(currentPerson.occupation);
             dob_label.setText(currentPerson.dateOfBirth);

@@ -2,17 +2,21 @@ package edu.templ.usbfamilytree;
 
 import java.util.*;
 
-class Graph
+public class Graph
 {
-    ArrayList<Node> nodes = new ArrayList<>();
-    LinkedList<LinkedList<Integer>> Adj = new LinkedList<LinkedList<Integer>>();; // adjacency list
-
-
-    void addNode(int id)
+    public ArrayList<Node> nodes = new ArrayList<>();
+    public LinkedList<LinkedList<Integer>> Adj = new LinkedList<LinkedList<Integer>>();; // adjacency list
+    public int id;
+    public Graph(){
+        id = 0;
+    }
+    public Node addNode(Person person)
     {
         //node id should be same as position in arraylist
-        Node node = new Node(id);
+        Node node = new Node(person, id);
         nodes.add(node);
+        id++;
+        return node;
     }
 
     //marital == true means that the edge is bidirectional

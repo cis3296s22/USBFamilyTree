@@ -8,15 +8,10 @@ public class Node
     public ArrayList<Edge> edges = new ArrayList<>();
     public int id;
 
-    Node(Person person, int id)
+    public Node(Person person, int id)
     {
         this.person = person;
         this.edges = new ArrayList<Edge>();
-        this.id = id;
-    }
-
-    Node(int id)
-    {
         this.id = id;
     }
 
@@ -25,9 +20,5 @@ public class Node
         edges.add(new Edge(marital, ancestor, id));
     }
 
-    public int getID()
-    {
-        return id;
-    }
 
 }
