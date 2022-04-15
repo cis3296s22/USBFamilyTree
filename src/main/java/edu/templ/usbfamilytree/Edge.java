@@ -1,9 +1,9 @@
 package edu.templ.usbfamilytree;
 
 public class Edge {
-    private boolean marital;
-    private boolean ancestor;
-    private int id;
+    public boolean marital;
+    public boolean ancestor;
+    public int id;
     public Edge(){
 
     }
