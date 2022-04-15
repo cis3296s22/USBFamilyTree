@@ -4,9 +4,11 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -18,27 +20,27 @@ import java.io.File;
 import java.io.IOException;
 
 public class DashboardController {
-
-    //saves currently clicked location
-    //when accessing a menu, this information is lost
+    //saves currently clicked location when accessing a menu, this information is lost
     private double xVal, yVal;
 
-    //placeholder labels
+    //variable for currently selected label;
     private Label selectedLabel = null;
+    @FXML
+    public Label rel_output;  //relationship output
+    public Label name_label;  //name label reference
+    public Label occ_label;   //occupation label reference
+    public Label dob_label;   //Date of birth label reference
+    public Button mediaButton;  //media button reference
+    public Label eye_label;     //eye color label reference
+    public Label height_label;  //height label reference
+    public ImageView imageView; //image container reference
+    public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
+    public ContextMenu canvasMenu;  //Context menu used for when right clicking on the screen to add a node
 
-    @FXML
-    public Label rel_output;
-    @FXML
-    public Label name_label;
-    @FXML
-    public Label occ_label;
-    @FXML
-    public Label dob_label;
-
-    public AnchorPane anchorpane;
-    public ContextMenu canvasMenu;
     private String graphJson = "";
     private Graph graph;
+
+    //constructor (called before initialize)
     public DashboardController(){
         try {
             System.out.println("Graph file path: " + Settings.graphPath);
@@ -69,12 +71,13 @@ public class DashboardController {
         if(graph != null) drawGraph(graph);
         rel_output.setText("Welcome to USBFamilyTree");
     }
+
     private void drawGraph(Graph graph) {
         // draw based off graph
         System.out.println("Pretend drawing the graph");
     }
 
-    //function that populates a menu
+    //function that populates a ContextMenu
     private void populateCanvasMenu() {
         //initiate a new contextMenu
         canvasMenu = new ContextMenu();
@@ -86,13 +89,11 @@ public class DashboardController {
         item1.setOnAction(actionEvent -> {
             showNodeCreationStage();
         });
-
         canvasMenu.getItems().addAll(item1);
     }
 
     public void onMainScreenClicked(MouseEvent mouseEvent) {
         //whenever the screen(anchor-pane) is clicked on this event is run
-
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
             //if the canvas is showing remove it from the screen
             if(canvasMenu.isShowing()){
