@@ -26,13 +26,13 @@
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Eye Color" />
-            <TextField />
+            <TextField fx:id="eyeColorTextField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="200.0" spacing="25.0">
          <children>
             <Label alignment="CENTER_RIGHT" minWidth="150.0" text="Height" />
-            <TextField />
+            <TextField fx:id="heightTextField" />
          </children>
       </HBox>
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="250.0" prefHeight="80.0" prefWidth="200.0" spacing="25.0">

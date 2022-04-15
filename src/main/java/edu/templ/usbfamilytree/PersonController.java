@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 
 public class PersonController {
     private Person person;
-    private String name, birthday, occupation;
+    private String name, birthday, occupation, eyeColor, height;
 
     static Scene scene;
     @FXML
@@ -28,7 +28,10 @@ public class PersonController {
     DatePicker birthdayDatePicker;
     @FXML
     TextField occupationTextField;
-
+    @FXML
+    TextField eyeColorTextField;
+    @FXML
+    TextField heightTextField;
 
 
     public static PersonController create() throws Exception {
@@ -43,7 +46,7 @@ public class PersonController {
         stage.setTitle("Enter Person Information");
         stage.setScene(scene);
         stage.showAndWait();
-        return new Person(name, birthday, occupation);
+        return new Person(name, birthday, occupation, eyeColor, height);
     }
     @FXML
     private void submit(ActionEvent event){
@@ -53,6 +56,12 @@ public class PersonController {
             name = nameTextField.getText();
             if(birthdayDatePicker.getValue() != null){ birthday = birthdayDatePicker.getValue().toString();}
             if(!occupationTextField.getText().isBlank()) {occupation = occupationTextField.getText();}
+            eyeColor = eyeColorTextField.getText();
+            height = heightTextField.getText();
+            /*
+            if(eyeColor == null) eyeColor = "Unknown";
+            if(height == null) eyeColor = "Unknown";
+            */
             Stage stage = (Stage) submitButton.getScene().getWindow();
             stage.close();
         }
