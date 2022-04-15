@@ -111,11 +111,11 @@ public class DashboardController {
         }
     }
 
-    private void drawParentConnection(Label label) {
+    private void drawParentConnection(Label label) { // marital only?
         //align parents to left YLayoutlocation
         Node node1 = (Node)selectedLabel.getUserData();
         Node node2 = (Node)label.getUserData();
-        graph.addNewEdge(node1.id, node2.id, true, false);
+        graph.addNewEdge(node1.id, node2.id, Edge.Relationship.marital);
         System.out.println(FileUtils.toJson(graph));
         label.setLayoutY(selectedLabel.getLayoutY());
 

@@ -21,27 +21,27 @@ public class Graph
 
     //marital == true means that the edge is bidirectional
     //if the edge is not marital and not ancestor it is descendant
-    public void addNewEdge(int src, int dest, boolean marital, boolean ancestor)
+    public void addNewEdge(int src, int dest, Edge.Relationship relationship)
     {
         Node source = nodes.get(src);
         Node destination = nodes.get(dest);
 
         //CAN UPDATE ALL THE FUNCTIONS TO ONLY NEED NODE ID
 
-        if(marital)
+        if(relationship == Edge.Relationship.marital)
         {
 
             //Node edge lists get added as well
-            source.addEdge(marital, ancestor, destination.id);
-            destination.addEdge(marital, ancestor, source.id);
+            source.addEdge(Edge.Relationship.marital, destination.id);
+            destination.addEdge(Edge.Relationship.marital, source.id);
         }
 
-        if(ancestor)
+        if(relationship == Edge.Relationship.ancestor)
         {
             //SOURCE is the ANCESTOR of DESTINATION
 
-            source.addEdge(marital, ancestor, destination.id);
-            destination.addEdge(marital, !ancestor, source.id);
+            source.addEdge(Edge.Relationship.ancestor, destination.id);
+            destination.addEdge(Edge.Relationship.descendant, source.id);
         }
 
         //THIS IMPLEMENTATION REQUIRES NODE IDS TO BE CUMULATIVE AND NOT SKIPPING nS
@@ -249,12 +249,12 @@ public class Graph
                             // System.out.println(n.id);
                             // System.out.println("The edge connects it to");
                             // System.out.println(edges.get(i + 1).intValue());
-                            if(e.marital)
+                            if(e.relationship == Edge.Relationship.marital)
                             {
                                 relationships[i] = "m";
                                 continue; //can only be marital, we don't allow for Alabama moments
                             }
-                            if(e.ancestor)
+                            else if(e.relationship == Edge.Relationship.descendant)
                             {
                                 relationships[i] = "d";
                             }

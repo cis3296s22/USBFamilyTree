@@ -1,15 +1,20 @@
 package edu.templ.usbfamilytree;
 
 public class Edge {
-    public boolean marital;
-    public boolean ancestor;
+    public Relationship relationship;
     public int id;
+
+    public enum Relationship{
+        marital,
+        ancestor,
+        descendant
+    }
+
     public Edge(){
 
     }
-    public Edge(boolean marital, boolean ancestor, int id){
-        this.marital = marital;
-        this.ancestor = ancestor;
+    public Edge(Relationship relationship, int id){
+        this.relationship = relationship;
         this.id = id;
     }
 }

@@ -15,9 +15,9 @@ public class Node
         this.id = id;
     }
 
-    public void addEdge(boolean marital, boolean ancestor, int id)
+    public void addEdge(Edge.Relationship relationship, int id)
     {
-        edges.add(new Edge(marital, ancestor, id));
+        edges.add(new Edge(relationship, id));
     }
 
 
