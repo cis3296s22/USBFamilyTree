@@ -5,11 +5,12 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.PersonController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.templ.usbfamilytree.PersonController">
    <children>
       <Label text="Add a Family Member">
          <font>
@@ -52,6 +53,17 @@
             <TextField fx:id="occupationTextField" />
          </children>
       </HBox>
+      <HBox alignment="CENTER" layoutX="10.0" layoutY="315.0" prefHeight="60.0" prefWidth="200.0" spacing="25.0">
+         <children>
+            <Label alignment="CENTER_RIGHT" text="Profile Picture Dir">
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </Label>
+            <Button fx:id="chooseImageButton" mnemonicParsing="false" onMouseClicked="#saveImage" prefHeight="25.0" prefWidth="40.0" text="..." />
+         </children>
+      </HBox>
+      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="390.0" prefHeight="39.0" prefWidth="400.0" spacing="25.0">
          <children>
             <Label fx:id="warningLabel" alignment="CENTER" minWidth="150.0" prefHeight="17.0" prefWidth="436.0" style="visibility: hidden;" text="Please insert a name" textFill="RED" />

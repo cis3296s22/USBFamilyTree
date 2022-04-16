@@ -6,13 +6,16 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
@@ -167,10 +170,10 @@ public class DashboardController {
                 //move label to corresponding location
                 selectedLabel.setLayoutY(selectedLine.getStartY() + Settings.CHILD_OFFSET);
                 if(childNum % 2 == 0){
-                    selectedLabel.setLayoutX((labelCenterX + ((Settings.LABEL_WIDTH + Settings.CHILD_PADDING) * (childNum/2.0))));
+                    selectedLabel.setLayoutX((labelCenterX + ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * (childNum/2.0))));
                 }
                 else if (childNum % 2 == 1){
-                    selectedLabel.setLayoutX((labelCenterX - ((Settings.LABEL_WIDTH + Settings.CHILD_PADDING) * ((childNum+1)/2.0))));
+                    selectedLabel.setLayoutX((labelCenterX - ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * ((childNum+1)/2.0))));
                 }
                 //get starting points for the line (top-center of label)
                 double startY = selectedLabel.getLayoutY();
@@ -282,9 +285,9 @@ public class DashboardController {
             name_label.setText(currentPerson.name);
             occ_label.setText(currentPerson.occupation);
             dob_label.setText(currentPerson.dateOfBirth);
-            eye_label.setText("insert person.eyeColor");
-            height_label.setText("insert person.height");
-//            imageView.setImage();
+            eye_label.setText(currentPerson.eyeColor);
+            height_label.setText(currentPerson.height);
+            imageView.setImage(new Image(currentPerson.filePath));
             mediaButton.setOnMouseClicked(event -> {
 
             });
@@ -295,6 +298,7 @@ public class DashboardController {
             dob_label.setText("");
             eye_label.setText("");
             height_label.setText("");
+            imageView.setImage(new Image("C:\\Users\\Rosal\\Desktop\\SoftDes2022\\USBFamilyTree\\src\\main\\resources\\saved_images\\no_image.jpg"));
             mediaButton.setOnMouseClicked(event -> {
                 //do nothing
             });
