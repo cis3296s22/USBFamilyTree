@@ -30,6 +30,8 @@ public class DashboardController {
     private String graphJson = "";
     private Graph graph;
 
+    private File file;
+
     @FXML
     public Label rel_output;  //relationship output
     public Label name_label;  //name label reference
@@ -68,6 +70,8 @@ public class DashboardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        file = new File("src/main/resources/saved_images/no_image.jpg");
     }
 
     @FXML //called when scene is first created in memory
@@ -298,7 +302,7 @@ public class DashboardController {
             dob_label.setText("");
             eye_label.setText("");
             height_label.setText("");
-            imageView.setImage(new Image("C:\\Users\\Rosal\\Desktop\\SoftDes2022\\USBFamilyTree\\src\\main\\resources\\saved_images\\no_image.jpg"));
+            imageView.setImage(new Image(file.getAbsolutePath()));
             mediaButton.setOnMouseClicked(event -> {
                 //do nothing
             });
@@ -309,6 +313,13 @@ public class DashboardController {
         if(selectedLabel != null){
             setUnselected(selectedLabel);
             updateSidePanel();
+        }
+
+        if (editTButton.isSelected()){
+            editTButton.setText("VIEW MODE");
+        }
+        else{
+            editTButton.setText("EDIT MODE");
         }
     }
 }

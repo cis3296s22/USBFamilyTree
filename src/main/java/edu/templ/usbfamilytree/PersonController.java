@@ -19,25 +19,21 @@ import java.io.File;
 import java.time.format.DateTimeFormatter;
 
 public class PersonController {
-    public Button chooseImageButton;
-    public ImageView imageView;
+    public Button chooseImageButton;    //reference to image button in FXML
+    public ImageView imageView;         //reference to ImageView in FXML
+    public Button submitButton;         //reference to submit button in FXML
+    public Label warningLabel;          //reference to label that displayed error in FXML
+    public TextField nameTextField;     //reference to name TextField in FXML
+    public DatePicker birthdayDatePicker;   //reference to DatePicker object in FXML
+    public TextField occupationTextField;   //reference to occupied TextField in FXML
+    public TextField eyeColorTextField;     //reference to eye color TextField in FXML
+    public TextField heightTextField;       //reference to height TextField in FXML
+
+    //Strings that will contain information passed into
     private String name, birthday, occupation, eyeColor, height, filePath;
     static Scene scene;
     private FileChooser fileChooser;
-    @FXML
-    Button submitButton;
-    @FXML
-    Label warningLabel;
-    @FXML
-    TextField nameTextField;
-    @FXML
-    DatePicker birthdayDatePicker;
-    @FXML
-    TextField occupationTextField;
-    @FXML
-    TextField eyeColorTextField;
-    @FXML
-    TextField heightTextField;
+    private File file;
 
 
     public static PersonController create() throws Exception {
@@ -59,6 +55,7 @@ public class PersonController {
     public void initialize(){
         fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("src/main/resources/"));
+        file = new File("src/main/resources/saved_images/no_image.jpg");
     }
     @FXML
     private void submit(ActionEvent event){
@@ -66,20 +63,22 @@ public class PersonController {
             warningLabel.setVisible(true);
         }else {
             name = nameTextField.getText();
-            if(birthdayDatePicker.getValue() != null){ birthday = birthdayDatePicker.getValue().toString();}
+            if(birthdayDatePicker.getEditor().getText() != null){ birthday = birthdayDatePicker.getEditor().getText();}
             occupation = !occupationTextField.getText().isEmpty() ? occupationTextField.getText() : "";
             eyeColor = eyeColorTextField.getText();
             height = heightTextField.getText();
-            if(filePath == null) {filePath = "C:\\Users\\Rosal\\Desktop\\SoftDes2022\\USBFamilyTree\\src\\main\\resources\\saved_images\\no_image.jpg";}
+
+            filePath = file.getAbsolutePath();
+
             Stage stage = (Stage) submitButton.getScene().getWindow();
             stage.close();
         }
     }
 
     public void saveImage(MouseEvent mouseEvent) {
-        File file = fileChooser.showOpenDialog(new Stage());
-        if(file != null){
-            System.out.println(file.toString());
+        File temp = fileChooser.showOpenDialog(new Stage());
+        if(temp != null){
+            file = temp;
             imageView.setImage(new Image(file.toString()));
             filePath = file.toString();
         }
