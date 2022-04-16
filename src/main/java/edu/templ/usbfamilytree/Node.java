@@ -8,26 +8,17 @@ public class Node
     public ArrayList<Edge> edges = new ArrayList<>();
     public int id;
 
-    Node(Person person, int id)
+    public Node(Person person, int id)
     {
         this.person = person;
         this.edges = new ArrayList<Edge>();
         this.id = id;
     }
 
-    Node(int id)
+    public void addEdge(Edge.Relationship relationship, int id)
     {
-        this.id = id;
+        edges.add(new Edge(relationship, id));
     }
 
-    public void addEdge(boolean marital, boolean ancestor, int id)
-    {
-        edges.add(new Edge(marital, ancestor, id));
-    }
-
-    public int getID()
-    {
-        return id;
-    }
 
 }
