@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 public class DashboardController {
 
@@ -111,7 +112,8 @@ public class DashboardController {
         }
     }
 
-    private void drawParentConnection(Label label) { // marital only?
+    private void drawParentConnection(Label label) {
+        // marital only?
         //align parents to left YLayoutlocation
         Node node1 = (Node)selectedLabel.getUserData(); // parent 1
         Node node2 = (Node)label.getUserData(); // parent 2
@@ -147,27 +149,41 @@ public class DashboardController {
             if(selectedLabel != null){ // the child
                 //extract current line
                 Line selectedLine = (Line)event.getSource();
+                //extract parent container from line
                 ParentContainer parentContainer = (ParentContainer) selectedLine.getUserData();
                 Node child = (Node)selectedLabel.getUserData();
 
+                //iterating through parents in parentContainer and adding an edge between parents and new child
                 for (Node parent: parentContainer.parents) {
                     graph.addNewEdge(parent.id, child.id, Edge.Relationship.ancestor);
                 }
+                //printing out graph
                 System.out.println(FileUtils.toJson(graph));
+                //current children #
                 int childNum = parentContainer.getChildIndex();
-                //selectedLine.setUserData(childNum+1);
-                System.out.println(childNum);
-                //create a line
+
+                double lineMiddleX = (selectedLine.getEndX() - selectedLine.getStartX())/2;
+                double labelCenterX = (lineMiddleX + selectedLine.getStartX() - Settings.LABEL_WIDTH/2);
+                //move label to corresponding location
+                selectedLabel.setLayoutY(selectedLine.getStartY() + Settings.CHILD_OFFSET);
+                if(childNum % 2 == 0){
+                    selectedLabel.setLayoutX((labelCenterX + ((Settings.LABEL_WIDTH + Settings.CHILD_PADDING) * (childNum/2.0))));
+                }
+                else if (childNum % 2 == 1){
+                    selectedLabel.setLayoutX((labelCenterX - ((Settings.LABEL_WIDTH + Settings.CHILD_PADDING) * ((childNum+1)/2.0))));
+                }
+                //get starting points for the line (top-center of label)
                 double startY = selectedLabel.getLayoutY();
                 double startX = selectedLabel.getLayoutX()+ Settings.LABEL_WIDTH/2;
-
                 //This is where the line is (end is the line that connects the parents
-                double endX = ((selectedLine.getEndX() - selectedLine.getStartX() )/2) + selectedLine.getStartX();
+                double endX = (lineMiddleX + selectedLine.getStartX());
                 double endY = selectedLine.getStartY();
 
                 Line line = new Line(startX, startY, endX, endY);
                 line.setStrokeWidth(2);
                 anchorpane.getChildren().add(line);
+                parentContainer.setChildIndex(parentContainer.getChildIndex()+1);
+                selectedLine.setUserData(parentContainer);
                 setUnselected(selectedLabel);
             }
         }
@@ -198,7 +214,10 @@ public class DashboardController {
     }
 
     private Label createLabel(Node node){
-        Label label = new Label();
+        //creating label, and setting text inside of label to person's name
+        Label label = new Label(node.person.name);
+
+        //Adjustments to the labels look
         label.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
         label.setPrefWidth(Settings.LABEL_WIDTH);
         label.setPrefHeight(Settings.LABEL_HEIGHT);
@@ -206,17 +225,18 @@ public class DashboardController {
         label.setTextFill(Color.BLACK);
         label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
         label.setAlignment(Pos.BASELINE_CENTER);
-
-        label.setOnMouseClicked(this::onLabelClicked);
-        label.setText(node.person.name);
         label.setLayoutX(xVal-(Settings.LABEL_WIDTH/2));
         label.setLayoutY(yVal-(Settings.LABEL_HEIGHT/2));
+
+        //onclick function
+        label.setOnMouseClicked(this::onLabelClicked);
+        //setting data to node passed on from showNodeCreationStage
         label.setUserData(node);
         return label;
     }
 
     private void onLabelClicked(MouseEvent event) {
-        //clicking on a label selects it for viewing & enables connection to another node
+        //IN VIEW MODE
         if(!editTButton.isSelected()) {
             if (selectedLabel == null) {
                 //pull what was clicked on and set it to currently selected label
