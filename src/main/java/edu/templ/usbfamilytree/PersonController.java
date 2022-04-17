@@ -19,11 +19,11 @@ import java.io.File;
 import java.time.format.DateTimeFormatter;
 
 public class PersonController {
-    public Button chooseImageButton;    //reference to image button in FXML
-    public ImageView imageView;         //reference to ImageView in FXML
-    public Button submitButton;         //reference to submit button in FXML
-    public Label warningLabel;          //reference to label that displayed error in FXML
-    public TextField nameTextField;     //reference to name TextField in FXML
+    public Button chooseImageButton;        //reference to image button in FXML
+    public ImageView imageView;             //reference to ImageView in FXML
+    public Button submitButton;             //reference to submit button in FXML
+    public Label warningLabel;              //reference to label that displayed error in FXML
+    public TextField nameTextField;         //reference to name TextField in FXML
     public DatePicker birthdayDatePicker;   //reference to DatePicker object in FXML
     public TextField occupationTextField;   //reference to occupied TextField in FXML
     public TextField eyeColorTextField;     //reference to eye color TextField in FXML
@@ -37,11 +37,11 @@ public class PersonController {
 
 
     public static PersonController create() throws Exception {
-
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("person-details.fxml"));
         scene = new Scene(fxmlLoader.load());
         return fxmlLoader.getController();
     }
+
     public Person Show() {
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);

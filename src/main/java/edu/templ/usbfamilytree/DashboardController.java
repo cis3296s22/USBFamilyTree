@@ -1,3 +1,7 @@
+/**
+ *  Main Controller class that controls all actions performed in the primary stage
+ */
+
 package edu.templ.usbfamilytree;
 
 import javafx.event.ActionEvent;
@@ -12,28 +16,26 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-
 import java.io.File;
-import java.io.IOException;
-import java.util.Set;
 
 public class DashboardController {
-
-    public ContextMenu canvasMenu;  //Context menu used for when right clicking on the screen to add a node
-    public Label relative_output;
-    private double xVal, yVal;  //defined variables for saving location of last screen click
-    private Label selectedLabel = null; //defined variable for saving currently selected label
-
-    private String graphJson = "";
+    /**
+     *  menu that will be displayed to the user after a performed action on the clickable area
+     */
+    private ContextMenu canvasMenu;
+    /**
+     *  Graph object used for backbone of application. Allows association between graph and controller class
+     */
     private Graph graph;
 
-    private File file;
+    private final File file;        //stores reference to default image in project directory
+    private Label selectedLabel;    //storing reference to a label after it is clicked
+    private Label secondLabel;      //storing reference to a label after the first is stored
+    private double xVal, yVal;      //defined variables for saving location of last screen click
 
-    @FXML
+    //FXML related fields
     public Label rel_output;  //relationship output
     public Label name_label;  //name label reference
     public Label occ_label;   //occupation label reference
@@ -44,53 +46,53 @@ public class DashboardController {
     public ImageView imageView; //image container reference
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ToggleButton editTButton; //Reference to toggle button in scene
-    private Label secondLabel;
+    public Label relative_output; // reference to closest relative label
 
-    //constructor (called before initialize)
+    /**
+     *  Constructor - initializes graph, and file to default image in project directory
+     */
     public DashboardController(){
-        try {
-            System.out.println("Graph file path: " + Settings.graphPath);
-            File file = new File(Settings.graphPath);
-            if(!file.exists()) {
-                file.createNewFile();
-
+//        System.out.println("Graph file path: " + Settings.graphPath);
+        File file1 = new File(Settings.graphPath);
+        if(file1.exists()) {;
+            String graphJson = FileUtils.ReadFile(file1.getPath());
+            if(!graphJson.isEmpty()) {
+                graph = FileUtils.fromJson(graphJson, Graph.class); // if it fails
+                drawGraph(graph);
             }
             else {
-                graphJson = FileUtils.ReadFile(file.getPath());
-                if(!graphJson.isEmpty() && graphJson != null)
-                {
-                    graph = FileUtils.fromJson(graphJson, Graph.class); // if it fails
-                    drawGraph(graph);
-
-                }
-                else
-                {
-                    graph = new Graph();
-
-                }
+                graph = new Graph();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
-
         file = new File("src/main/resources/saved_images/no_image.jpg");
     }
 
-    @FXML //called when scene is first created in memory
+    /**
+     *  Called after constructor. Initializes JavaFX components before allowing user to interact with them.
+     *  Prevents runtime null errors.
+     */
+    @FXML
     public void initialize() {
         //populates a menu
-        populateCanvasMenu();
+        initializeMenu();
         if(graph != null) drawGraph(graph);
     }
 
 
+    /**
+     * Populates the screen with graph object read from a file.
+     *
+     * @param graph used for redrawing all objects from previously saved graph
+     */
     private void drawGraph(Graph graph) {
         // draw based off graph
         System.out.println("Pretend drawing the graph");
     }
 
-    //function that populates a ContextMenu
-    private void populateCanvasMenu() {
+    /**
+     *  Initializes the context menu defined for the class, and adds menu items to the menu.
+     */
+    private void initializeMenu() {
         //initiate a new contextMenu
         canvasMenu = new ContextMenu();
         //initiate a new menu item
@@ -104,7 +106,14 @@ public class DashboardController {
         canvasMenu.getItems().addAll(item1);
     }
 
-    public void onMainScreenClicked(MouseEvent mouseEvent) {
+    /**
+     * Event handling method that is executed whenever a user clicks on the main screen.
+     * Reference by the FXML file and set to the anchor-pane that is visible to the user.
+     *
+     * @param mouseEvent is the event that is passed on from user input. Can extract what type of mouseevent was triggered from this.
+     */
+    @FXML
+    private void onMainScreenClicked(MouseEvent mouseEvent) {
         //whenever the screen(anchor-pane) is clicked on this event is run
         if (mouseEvent.getButton() == MouseButton.PRIMARY){
             //if the canvas is showing remove it from the screen
@@ -120,8 +129,14 @@ public class DashboardController {
         }
     }
 
-    private void drawParentConnection(Label label) {
-        // marital only?
+    /**
+     *  Retrieves data from selected label and label from parameter and adds a new
+     *  marital edge relationship in graph. Adds a line connecting both labels to main UI.
+     *
+     * @param label is a reference to a label that will be moved on the screen.
+     */
+    private void addMaritalRelationship(Label label) {
+        // marital only
         //align parents to left YLayoutlocation
         Node node1 = (Node)selectedLabel.getUserData(); // parent 1
         Node node2 = (Node)label.getUserData(); // parent 2
@@ -142,7 +157,7 @@ public class DashboardController {
         Line line = new Line(startX, y, endX, y);
         line.setStrokeWidth(4);
         line.setCursor(Cursor.HAND);
-        line.setOnMouseClicked(this::onLineClicked);
+        line.setOnMouseClicked(this::addChildRelationship);
         line.setUserData(parentContainer);
 
         //add it to parent hierarchy
@@ -152,11 +167,17 @@ public class DashboardController {
         setUnselected(selectedLabel);
     }
 
-    private void onLineClicked(MouseEvent event) {
+    /**
+     *  Retrieves data from selected label and line from the mouse event parameter and adds new
+     *  ancestor edge relationships between parents and child.
+     *
+     * @param mouseEvent is the event that is passed on from user input. Can extract what type of mouse event was triggered from this.
+     */
+    private void addChildRelationship(MouseEvent mouseEvent) {
         if(editTButton.isSelected()){
             if(selectedLabel != null){ // the child
                 //extract current line
-                Line selectedLine = (Line)event.getSource();
+                Line selectedLine = (Line)mouseEvent.getSource();
                 //extract parent container from line
                 ParentContainer parentContainer = (ParentContainer) selectedLine.getUserData();
                 Node child = (Node)selectedLabel.getUserData();
@@ -197,6 +218,10 @@ public class DashboardController {
         }
     }
 
+    /**
+     *  Opens a new stage for user input of a new family member and adds the new member to a node, then to the graph object defined in this class.
+     *
+     */
     private void showNodeCreationStage(){
         try {
             PersonController controller = PersonController.create();
@@ -290,7 +315,7 @@ public class DashboardController {
                     setUnselected(selectedLabel);
                 }
                 else{
-                    drawParentConnection(newLabel);
+                    addMaritalRelationship(newLabel);
                 }
             }
         }
@@ -341,7 +366,8 @@ public class DashboardController {
         }
     }
 
-    public void toggleButtonPressed(ActionEvent event) {
+    @FXML
+    private void toggleButtonPressed() {
         if(selectedLabel != null){
             setUnselected(selectedLabel);
             updateSidePanel();
