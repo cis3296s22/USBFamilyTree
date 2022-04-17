@@ -180,7 +180,7 @@ public class DashboardController {
                 Node child = (Node)selectedLabel.getUserData();
 
                 //iterating through parents in parentContainer and adding an edge between parents and new child
-                for (Node parent: parentContainer.parents) {
+                for (Node parent: parentContainer.getParents()) {
                     graph.addNewEdge(parent.id, child.id, Edge.Relationship.ancestor);
                 }
                 //printing out graph
@@ -221,7 +221,7 @@ public class DashboardController {
      */
     private void showNodeCreationStage(){
         try {
-            PersonController controller = PersonController.create();
+            PersonController controller = new PersonController().create();
             //returned from creation stage, everything except name can be null
             Person p = controller.Show();
             Node node =  graph.addNode(p);
