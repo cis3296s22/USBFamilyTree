@@ -43,6 +43,7 @@ public class DashboardController {
     public ImageView imageView; //image container reference
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ToggleButton editTButton; //Reference to toggle button in scene
+    private Label secondLabel;
 
     //constructor (called before initialize)
     public DashboardController(){
@@ -79,7 +80,6 @@ public class DashboardController {
         //populates a menu
         populateCanvasMenu();
         if(graph != null) drawGraph(graph);
-        rel_output.setText("Welcome to USBFamilyTree");
     }
 
 
@@ -217,7 +217,8 @@ public class DashboardController {
 
     private void setUnselected(Label label){
         label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
-        selectedLabel = null;
+        if (label ==  selectedLabel) {selectedLabel = null;}
+        else secondLabel = null;
     }
 
     private Label createLabel(Node node){
@@ -245,20 +246,32 @@ public class DashboardController {
     private void onLabelClicked(MouseEvent event) {
         //IN VIEW MODE
         if(!editTButton.isSelected()) {
+            Label newLabel = (Label) event.getSource();
+
             if (selectedLabel == null) {
                 //pull what was clicked on and set it to currently selected label
-                selectedLabel = (Label) event.getSource();
+                selectedLabel = newLabel;
                 setSelected(selectedLabel);
-            } else {
-                Label newLabel = (Label) event.getSource();
-                if (selectedLabel == newLabel) {
-                    //if the user clicks on the same label, we unselect
+            }
+            //if we currently already chose a label to view info about
+            else {
+                if(secondLabel != null){
                     setUnselected(selectedLabel);
-                }
-                else{
-                    setUnselected(selectedLabel);
+                    setUnselected(secondLabel);
+                    updateRelationship();
                     setSelected(newLabel);
                     selectedLabel = newLabel;
+                }
+                //if the one we clicked is the same as the previously clicked one, then deselect it
+                else if (selectedLabel != newLabel) {
+                    //if the user clicks on the same label, we unselect
+//                    setUnselected(selectedLabel);
+                    secondLabel = newLabel;
+                    setSelected(secondLabel);
+                    updateRelationship();
+                }
+                else {
+                    setUnselected(selectedLabel);
                 }
             }
             updateSidePanel();
@@ -279,6 +292,20 @@ public class DashboardController {
                     drawParentConnection(newLabel);
                 }
             }
+        }
+    }
+
+    private void updateRelationship() {
+        if(selectedLabel != null && secondLabel != null){
+            Node personOne = (Node)selectedLabel.getUserData();
+            Node personTwo = (Node)secondLabel.getUserData();
+            String relationship = graph.findRelationship(personOne.id, personTwo.id);
+            String output = "The Relationship from " + personOne.person.name + " and " + personTwo.person.name + " is:\n" + relationship;
+            rel_output.setText(output);
+        }
+        else{
+            rel_output.setText("");
+
         }
     }
 
