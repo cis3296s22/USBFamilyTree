@@ -13,6 +13,11 @@ public class Person {
     public Person(){
 
     }
+
+    public Person(String name){
+        this.name = name;
+    }
+
     public Person(String name, String dateOfBirth, String occupation, String eyeColor, String height, String filePath){
         this.name = name;
         this.dateOfBirth = dateOfBirth;

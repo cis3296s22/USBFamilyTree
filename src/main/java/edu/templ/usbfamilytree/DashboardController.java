@@ -24,6 +24,7 @@ import java.util.Set;
 public class DashboardController {
 
     public ContextMenu canvasMenu;  //Context menu used for when right clicking on the screen to add a node
+    public Label relative_output;
     private double xVal, yVal;  //defined variables for saving location of last screen click
     private Label selectedLabel = null; //defined variable for saving currently selected label
 
@@ -133,13 +134,13 @@ public class DashboardController {
         label.setLayoutY(selectedLabel.getLayoutY());
 
         //Create new line (marriage/parents line only horizontal)
-        double y = selectedLabel.getLayoutY()+Settings.NAME_LABEL_OFFSET+ Settings.LABEL_HEIGHT/2;
+        double y = selectedLabel.getLayoutY()+ Settings.LABEL_HEIGHT/2;
         double startX = selectedLabel.getLayoutX()+Settings.LABEL_WIDTH;
         label.setLayoutX(startX + Settings.MARITAL_EDGE_LENGTH);
         double endX = label.getLayoutX();
 
         Line line = new Line(startX, y, endX, y);
-        line.setStrokeWidth(2);
+        line.setStrokeWidth(4);
         line.setCursor(Cursor.HAND);
         line.setOnMouseClicked(this::onLineClicked);
         line.setUserData(parentContainer);
@@ -299,13 +300,17 @@ public class DashboardController {
         if(selectedLabel != null && secondLabel != null){
             Node personOne = (Node)selectedLabel.getUserData();
             Node personTwo = (Node)secondLabel.getUserData();
+
             String relationship = graph.findRelationship(personOne.id, personTwo.id);
-            String output = "The Relationship from " + personOne.person.name + " and " + personTwo.person.name + " is:\n" + relationship;
+            String output = "The Relationship from " + personOne.person.name + " to " + personTwo.person.name + " is:\n" + relationship;
             rel_output.setText(output);
+
+            int closetRelative = graph.closestRelative(personOne.id, personTwo.id);
+            relative_output.setText("Closet Relative: " + graph.nodes.get(closetRelative).person.name);
         }
         else{
             rel_output.setText("");
-
+            relative_output.setText("");
         }
     }
 

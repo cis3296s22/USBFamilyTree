@@ -9,15 +9,12 @@ import javafx.stage.Stage;
 import java.io.File;
 
 public class MainApplication extends Application {
-    private final String applicationName = "USB Family Tree";
-
-
     @Override
     public void start(Stage stage){
         try{
             FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("dashboard-view.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle(applicationName);
+            stage.setTitle(Settings.applicationName);
             stage.setScene(scene);
             stage.show();
         } catch (Exception e){
@@ -28,8 +25,5 @@ public class MainApplication extends Application {
     public static void main(String[] args) {
         System.out.println("Hello World!");
         launch();
-
-        //whenever the application is closed, it should continue from here,
-        //TODO save graph to file
     }
 }

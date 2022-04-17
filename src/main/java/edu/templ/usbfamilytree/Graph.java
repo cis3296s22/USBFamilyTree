@@ -307,7 +307,7 @@ public class Graph
             {
                 ancestorctr++;
             }
-            else
+            else if (rel[i] == "d")
             {
                 childctr++;
             }

@@ -174,17 +174,29 @@
                   <Insets left="20.0" right="20.0" />
                </VBox.margin>
             </HBox>
-            <Label fx:id="rel_output" alignment="CENTER" contentDisplay="BOTTOM" prefWidth="400.0" text="Relationship: " VBox.vgrow="NEVER">
+            <VBox VBox.vgrow="NEVER">
                <VBox.margin>
                   <Insets bottom="30.0" />
                </VBox.margin>
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
-            </Label>
+               <children>
+                  <Label fx:id="relative_output" contentDisplay="BOTTOM" prefWidth="400.0" text="Closet Relative:">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+                  <Label fx:id="rel_output" contentDisplay="BOTTOM" prefWidth="400.0" text="Relationship: ">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
          </children>
       </VBox>
    </children>

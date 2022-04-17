@@ -11,4 +11,5 @@ public class Settings {
     public static final double MARITAL_EDGE_LENGTH = 80;
     public static final double CHILD_OFFSET = 140;
     public static final double CHILDREN_PADDING = 20.0;
+    public static final String applicationName = "USB Family Tree";
 }
