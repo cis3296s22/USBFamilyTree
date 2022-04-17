@@ -4,7 +4,6 @@
 
 package edu.templ.usbfamilytree;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -46,7 +45,7 @@ public class DashboardController {
     public ImageView imageView; //image container reference
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ToggleButton editTButton; //Reference to toggle button in scene
-    public Label relative_output; // reference to closest relative label
+    public Label relative_output; // reference to the closest relative label
 
     /**
      *  Constructor - initializes graph, and file to default image in project directory
@@ -54,7 +53,7 @@ public class DashboardController {
     public DashboardController(){
 //        System.out.println("Graph file path: " + Settings.graphPath);
         File file1 = new File(Settings.graphPath);
-        if(file1.exists()) {;
+        if(file1.exists()) {
             String graphJson = FileUtils.ReadFile(file1.getPath());
             if(!graphJson.isEmpty()) {
                 graph = FileUtils.fromJson(graphJson, Graph.class); // if it fails
@@ -100,9 +99,7 @@ public class DashboardController {
         //fill in its text
         item1.setText("Add a new person");
         //set its onclick event
-        item1.setOnAction(actionEvent -> {
-            showNodeCreationStage();
-        });
+        item1.setOnAction(actionEvent -> showNodeCreationStage());
         canvasMenu.getItems().addAll(item1);
     }
 
@@ -137,7 +134,7 @@ public class DashboardController {
      */
     private void addMaritalRelationship(Label label) {
         // marital only
-        //align parents to left YLayoutlocation
+        //align parents to left YLayout-location
         Node node1 = (Node)selectedLabel.getUserData(); // parent 1
         Node node2 = (Node)label.getUserData(); // parent 2
         graph.addNewEdge(node1.id, node2.id, Edge.Relationship.marital);
@@ -237,16 +234,30 @@ public class DashboardController {
         }
     }
 
+    /**
+     *  Changes the background color of the label passed in the parameter
+     * @param label reference to a label
+     */
     private void setSelected(Label label){
         label.setBackground(new Background(new BackgroundFill(Color.DODGERBLUE, new CornerRadii(0), new Insets(0))));
     }
 
+    /**
+     *  Changes the background color of the label passed in the parameter
+     * @param label reference to a label
+     */
     private void setUnselected(Label label){
         label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
         if (label ==  selectedLabel) {selectedLabel = null;}
         else secondLabel = null;
     }
 
+    /**
+     * Creates a new clickable label using the information from the passed parameter node
+     *
+     * @param node contains information retrieved from person controller
+     * @return returns a Label that has its own custom properties and sets its user data to the information passed from node
+     */
     private Label createLabel(Node node){
         //creating label, and setting text inside of label to person's name
         Label label = new Label(node.person.name);
@@ -269,10 +280,15 @@ public class DashboardController {
         return label;
     }
 
-    private void onLabelClicked(MouseEvent event) {
+    /**
+     * Event that is run when a label is clicked, controls the currently selected label and the second label selected.
+     *
+     * @param mouseEvent is the event that is passed on from user input. Can extract what type of mouse event was triggered from this.
+     */
+    private void onLabelClicked(MouseEvent mouseEvent) {
         //IN VIEW MODE
+        Label newLabel = (Label) mouseEvent.getSource();
         if(!editTButton.isSelected()) {
-            Label newLabel = (Label) event.getSource();
 
             if (selectedLabel == null) {
                 //pull what was clicked on and set it to currently selected label
@@ -306,10 +322,9 @@ public class DashboardController {
         else {
             if (selectedLabel == null) {
                 //pull what was clicked on and set it to currently selected label
-                selectedLabel = (Label) event.getSource();
+                selectedLabel = (Label) mouseEvent.getSource();
                 setSelected(selectedLabel);
             } else {
-                Label newLabel = (Label) event.getSource();
                 if (selectedLabel == newLabel) {
                     //if the user clicks on the same label, we unselect
                     setUnselected(selectedLabel);
@@ -321,6 +336,9 @@ public class DashboardController {
         }
     }
 
+    /**
+     *  Updates GUI relation labels depending on the current status of the selected labels
+     */
     private void updateRelationship() {
         if(selectedLabel != null && secondLabel != null){
             Node personOne = (Node)selectedLabel.getUserData();
@@ -339,6 +357,9 @@ public class DashboardController {
         }
     }
 
+    /**
+     *  Updates GUI side panel on currently selected label
+     */
     private void updateSidePanel() {
         if(selectedLabel != null) {
             Node node = (Node)selectedLabel.getUserData();
@@ -366,13 +387,20 @@ public class DashboardController {
         }
     }
 
+    /**
+     *  Depending on the status of the toggle button, sets the mode to edit or to view for the application
+     *  and sets text of toggle button depending on its currents state
+     */
     @FXML
     private void toggleButtonPressed() {
+        //if label is not null (something is selected)
         if(selectedLabel != null){
+            //unselect it
             setUnselected(selectedLabel);
+            //update side panel
             updateSidePanel();
         }
-
+        //sets text of toggle button depending on its currents state
         if (editTButton.isSelected()){
             editTButton.setText("VIEW MODE");
         }
