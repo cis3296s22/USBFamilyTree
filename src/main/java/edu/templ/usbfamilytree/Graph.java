@@ -18,9 +18,19 @@ public class Graph
      */
 
     public ArrayList<Node> nodes = new ArrayList<>();
+    /**
+     * Adj contains the adjacency list of the graph
+     */
     public LinkedList<LinkedList<Integer>> Adj = new LinkedList<>(); // adjacency list
     //ID is incremented in the Graph class itself
+    /**
+     * The ID is initialized, stored, and incremented in the Graph class itself
+     */
     public int id;
+
+    /**
+     * ID value is initialized to zero when a Graph is made
+     */
     public Graph(){
         id = 0;
     }
@@ -97,6 +107,9 @@ public class Graph
 
     }
 
+    /**
+     * Prints the adjacency list Adj stored in the Graph class
+     */
     void printadjacencylist()
     {
         for (int i = 0; i < Adj.size(); ++i) {

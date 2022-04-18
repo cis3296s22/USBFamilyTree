@@ -2,14 +2,39 @@ package edu.templ.usbfamilytree;
 
 import com.google.gson.JsonSyntaxException;
 
-public class Person {
+/**
+ * Contains all of the variables and methods associated with a Person
+ */
+public class Person
+{
+    /**
+     * Stores the name of a Person
+     */
     public String name;
+    /**
+     * Stores the DOB of a Person
+     */
     public String dateOfBirth;
+    /**
+     * Stores the occupation of job of a Person
+     */
     public String occupation;
+    /**
+     * Stores the eye color of a Person
+     */
     public String eyeColor;
+    /**
+     * Stores the height of a Person
+     */
     public String height;
+    /**
+     * Stores the file in which all of the images, vidoes, or other files pertaining this Person can be accessed
+     */
     public String filePath;
 
+    /**
+     * Empty constructor for testing
+     */
     public Person(){
 
     }
