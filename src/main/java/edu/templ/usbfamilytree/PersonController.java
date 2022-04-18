@@ -1,6 +1,8 @@
+/**
+ * Controller for Person Stage
+ */
 package edu.templ.usbfamilytree;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,20 +12,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.time.format.DateTimeFormatter;
 
 public class PersonController {
-    public Button chooseImageButton;    //reference to image button in FXML
-    public ImageView imageView;         //reference to ImageView in FXML
-    public Button submitButton;         //reference to submit button in FXML
-    public Label warningLabel;          //reference to label that displayed error in FXML
-    public TextField nameTextField;     //reference to name TextField in FXML
+    public Button chooseImageButton;        //reference to image button in FXML
+    public ImageView imageView;             //reference to ImageView in FXML
+    public Button submitButton;             //reference to submit button in FXML
+    public Label warningLabel;              //reference to label that displayed error in FXML
+    public TextField nameTextField;         //reference to name TextField in FXML
     public DatePicker birthdayDatePicker;   //reference to DatePicker object in FXML
     public TextField occupationTextField;   //reference to occupied TextField in FXML
     public TextField eyeColorTextField;     //reference to eye color TextField in FXML
@@ -31,17 +31,41 @@ public class PersonController {
 
     //Strings that will contain information passed into
     private String name, birthday, occupation, eyeColor, height, filePath;
+    //scene called from another stage
     static Scene scene;
+    //File chooser object created
     private FileChooser fileChooser;
     private File file;
 
 
-    public static PersonController create() throws Exception {
+    /**
+     * Called after constructor. Initializes JavaFX components before allowing user to interact with them.
+     * Prevents runtime null errors.
+     */
+    @FXML
+    public void initialize(){
+        fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("src/main/resources/"));
+        file = new File("src/main/resources/saved_images/no_image.jpg");
+    }
 
+    /**
+     *  Loads appropriate FXMl file for this controller class
+     *
+     * @return  reruns the controller class
+     * @throws Exception runtime exception
+     */
+    public static PersonController create() throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("person-details.fxml"));
         scene = new Scene(fxmlLoader.load());
         return fxmlLoader.getController();
     }
+
+    /**
+     * Function that is run whenever the user opens the node creation stage
+     *
+     * @return Person object depending on how the user entered their information
+     */
     public Person Show() {
         Stage stage = new Stage();
         stage.initModality(Modality.WINDOW_MODAL);
@@ -51,14 +75,11 @@ public class PersonController {
         return new Person(name, birthday, occupation, eyeColor, height, filePath);
     }
 
+    /**
+     * Event that is run whenever the user clicks on the submit button. Stores all information into class fields
+     */
     @FXML
-    public void initialize(){
-        fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(new File("src/main/resources/"));
-        file = new File("src/main/resources/saved_images/no_image.jpg");
-    }
-    @FXML
-    private void submit(ActionEvent event){
+    private void submit(){
         if(nameTextField.getText().isBlank()){
             warningLabel.setVisible(true);
         }else {
@@ -75,7 +96,12 @@ public class PersonController {
         }
     }
 
-    public void saveImage(MouseEvent mouseEvent) {
+    /**
+     *  Function runs when the user clicks the button to add a new image, opens a file chooser component and returns a file, the file is
+     *  loaded onto the stage when selected if it was not null
+     */
+    @FXML
+    private void saveImage() {
         File temp = fileChooser.showOpenDialog(new Stage());
         if(temp != null){
             file = temp;
