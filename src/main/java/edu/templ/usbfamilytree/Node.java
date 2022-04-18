@@ -1,16 +1,25 @@
 package edu.templ.usbfamilytree;
 
 import java.util.ArrayList;
-
+/**
+ * Each Node contains a Person, the ID of the Node, as well
+ * as an arraylist that contains all the Edges that this
+ * Node uses to connect to other Nodes
+ */
 public class Node
 {
+
     /**
-     * Each Node contains a Person, the ID of the Node, as well
-     * as an arraylist that contains all the Edges that this
-     * Node uses to connect to other Nodes
+     * Node contains a Person
      */
     public Person person;
+    /**
+     * Node contains a list of nodes that it connects to- edges are stored with IDs
+     */
     public ArrayList<Edge> edges = new ArrayList<>();
+    /**
+     * Each Node has a unique ID, incremented in Graph class each time a new Node is created
+     */
     public int id;
 
     /**
