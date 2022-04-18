@@ -2,14 +2,35 @@ package edu.templ.usbfamilytree;
 
 import java.util.*;
 
+
+
+/**
+ * Graph contains all the underlying functions necessary
+ * to make the family tree program work. Adding nodes, edges,
+ * performing searches
+ */
 public class Graph
 {
+    /**
+     * nodes arraylist will contain all nodes, node id corresponds to position in arraylist
+     * Adj is the adjacency list for the bidirectional graph
+     * id contains the incrementation of the ids of the nodes as new nodes are created
+     */
+
     public ArrayList<Node> nodes = new ArrayList<>();
-    public LinkedList<LinkedList<Integer>> Adj = new LinkedList<LinkedList<Integer>>();; // adjacency list
+    public LinkedList<LinkedList<Integer>> Adj = new LinkedList<>(); // adjacency list
+    //ID is incremented in the Graph class itself
     public int id;
     public Graph(){
         id = 0;
     }
+
+    /**
+     * addNode creates a node, adding it to the nodes arraylist
+     * and incrementing the ID as its ID is set to the current ID
+     * @param person nodes contain the Person themselves
+     * @return returns the node after it's been created
+     */
     public Node addNode(Person person)
     {
         //node id should be same as position in arraylist
@@ -19,14 +40,20 @@ public class Graph
         return node;
     }
 
-    //marital == true means that the edge is bidirectional
-    //if the edge is not marital and not ancestor it is descendant
+    /**
+     * Taking the IDs as well as the relationship enum,
+     * the function creates edges that are stored in the
+     * Nodes themselves as well as adding it to the adjacency list
+     * within the Graph class itself.
+     * @param src start node id
+     * @param dest end node id
+     * @param relationship relationship between start and end
+     */
     public void addNewEdge(int src, int dest, Edge.Relationship relationship)
     {
         Node source = nodes.get(src);
         Node destination = nodes.get(dest);
 
-        //CAN UPDATE ALL THE FUNCTIONS TO ONLY NEED NODE ID
 
         if(relationship == Edge.Relationship.marital)
         {
@@ -44,13 +71,13 @@ public class Graph
             destination.addEdge(Edge.Relationship.descendant, source.id);
         }
 
-        //THIS IMPLEMENTATION REQUIRES NODE IDS TO BE CUMULATIVE AND NOT SKIPPING nS
+        //THIS IMPLEMENTATION REQUIRES NODE IDS TO BE CUMULATIVE AND NOT SKIPPING
         //integer adjacency list
         if(Adj.size() <= source.id + 1)
         {
             while(Adj.size() != source.id + 1)
             {
-                Adj.add(new LinkedList<Integer>());
+                Adj.add(new LinkedList<>());
             }
         }
 
@@ -58,7 +85,7 @@ public class Graph
         {
             while(Adj.size() != destination.id + 1)
             {
-                Adj.add(new LinkedList<Integer>());
+                Adj.add(new LinkedList<>());
             }
         }
 
@@ -87,31 +114,56 @@ public class Graph
         }
     }
 
-
-    void BFS(ArrayList<Integer> queue, boolean[] visited, int[] parent)
+    /**
+     * This BFS searches just one iteration at a time,
+     * adding only immediate neighbors to the queue then stopping
+     * @param queue contains the queue of neighbors or nodes we need to visit
+     * @param visited boolean array to know whether a node has been visited
+     * @param path contains the path taken as we move from node to node
+     */
+    void BFS(ArrayList<Integer> queue, boolean[] visited, int[] path)
     {
+        //pop
         int current = queue.remove(0);
 
         for(int i = 0; i < Adj.get(current).size(); i++)
         {
+            //get neighbors
             int x = Adj.get(current).get(i);
             if(!visited[x])
             {
+                //add to queue
                 queue.add(x);
                 visited[x] = true;
-                parent[x] = current;
+                path[x] = current;
             }
         }
     }
 
+    /**
+     * Bidirectional implements a bidirectional search
+     * which basically does a BFS from the end node
+     * and the start node one at a time searching for
+     * the intersecting point, then returning the node
+     * path from one node to the other
+     * @param start ID of starting node
+     * @param end ID of ending node
+     * @return returns integer array list of the path of nodes
+     */
     ArrayList<Integer> Bidirectional(int start, int end)
     {
         ArrayList<Integer> retpath = new ArrayList<>();
 
+        //keep track of visited
         boolean[] v1 = new boolean[Adj.size()];
         boolean[] v2 = new boolean[Adj.size()];
+
+        //these arrays keep track of the path
         int[] p1 = new int[Adj.size()];
         int[] p2 = new int[Adj.size()];
+
+
+        //initializing values
         for(int i = 0;i < Adj.size(); i++)
         {
             v1[i]=false;
@@ -121,22 +173,29 @@ public class Graph
         }
 
 
+        //stores queues
         ArrayList<Integer> q1=new ArrayList<>();
         ArrayList<Integer> q2=new ArrayList<>();
+
+        //start and end are visited
         q1.add(start);
         v1[start] = true;
         q2.add(end);
         v2[end] = true;
+
+        //initializing intersect point
         int intersect = -1;
 
 
         while(q1.size() > 0 && q2.size() > 0)
         {
+            //BFS one step at a time
             BFS(q1, v1, p1);
             BFS(q2, v2, p2);
 
             for(int i = 0; i < Adj.size(); i++)
             {
+                //checking to see if any of the nodes we visited match
                 if(v1[i] && v2[i])
                 {
                     intersect = i;
@@ -159,25 +218,34 @@ public class Graph
 
         while(j!=-1)
         {
-            retpath.add(0, j);
-            j=p1[j];
+            retpath.add(0, j); //adding intersection to return path array and then path
+            j=p1[j]; //this traverses backwards from the intersection to the start
         }
 
         j=p2[intersect];
 
         while(j!=-1)
         {
-            retpath.add(j);
+            retpath.add(j); //adding path from after intersection to the end of the search
             j=p2[j];
         }
 
-        // System.out.println(intersect);
-        // System.out.println(retpath);
 
 
         return retpath;
     }
 
+    /**/
+
+    /**
+     * Part of the bidirectional search is finding the
+     * intersection or closest node between two nodes.
+     * This can also be used to find the closes relative
+     * between two nodes. takes in two IDs and returns an ID
+     * @param start starting node ID
+     * @param end ending node ID
+     * @return returns integer ID of the closest shared node (relative) between start and end
+     */
     int closestRelative(int start, int end)
     {
 
@@ -227,32 +295,40 @@ public class Graph
         return -1;
     }
 
-    /* */
 
+    /**/
+
+    /**
+     * Takes the Node ID arraylist from Bidirectional and converts it to
+     * a string array that contains the edge types.
+     * @param s takes start node ID
+     * @param d takes end node ID
+     * @return String array of edges, or edge path from source to destination
+     */
     String[] getNodeEdge(int s, int d)
     {
         //edges is a list of INTEGER IDs
         ArrayList<Integer> edges = Bidirectional(s, d);
         String[] relationships = new String[edges.size() - 1];
 
+        //adding to specific indeces of relationships array
         for(int i = 0; i < relationships.length; i++)
         {
             for(Node n : nodes)
             {
-                if(edges.get(i).intValue() == n.id)
+                //checking to see if the edge from the BFS links to the current node
+                if(edges.get(i) == n.id)
                 {
                     for(Edge e : n.edges)
                     {
-                        if(e.id == edges.get(i + 1).intValue())
+                        //basically checks for the edge the Node has with what we
+                        //got from BFS and adds the relationship to our String[]
+                        if(e.id == edges.get(i + 1))
                         {
-                            // System.out.println("The node we are on is");
-                            // System.out.println(n.id);
-                            // System.out.println("The edge connects it to");
-                            // System.out.println(edges.get(i + 1).intValue());
                             if(e.relationship == Edge.Relationship.marital)
                             {
                                 relationships[i] = "m";
-                                continue; //can only be marital, we don't allow for Alabama moments
+                                //can only be marital, we don't allow for Alabama moments
                             }
                             else if(e.relationship == Edge.Relationship.descendant)
                             {
@@ -270,6 +346,15 @@ public class Graph
         return relationships;
     }
 
+    /*gets ordinal number given an integer
+     *for better readability in the findRelationship*/
+
+    /**
+     * gets ordinal number given an integer
+     * for better readability in the findRelationship
+     * @param n any integer
+     * @return String of ordinal form of int
+     */
     String getOrd(int n)
     {
         int m100 = n % 100;
@@ -292,6 +377,20 @@ public class Graph
         }
     }
 
+    /**/
+
+    /**
+     * Takes two IDs and performs a BFS
+     * then gets their edge relationships
+     * and traverses each edge type to find
+     * the relationship between the start and end
+     * nodes, then prints out the relationship
+     * given the types of relationships between
+     * each person passed.
+     * @param s starting node
+     * @param d destination node
+     * @return String of the relationship, for example "child" or "1st cousing 2 time(s) removed"
+     */
     String findRelationship(int s, int d)
     {
         String path = "";
@@ -301,13 +400,13 @@ public class Graph
         String[] rel = getNodeEdge(s, d);
         int ancestorctr = 0;
         int childctr = 0;
-        for(int i = 0; i < rel.length; i++)
+        for (String value : rel)
         {
-            if(rel[i] == "a")
+            if (value == "a")
             {
                 ancestorctr++;
             }
-            else if (rel[i] == "d")
+            else
             {
                 childctr++;
             }
@@ -362,7 +461,7 @@ public class Graph
                 }
                 default: //great +
                 {
-                    if(ancestorctr > 5)
+                    if(ancestorctr > 5) //don't want output to be too big
                     {
                         path = String.format("great^%d ", ancestorctr - 2);
                     }
@@ -380,99 +479,73 @@ public class Graph
 
         if(ancestorctr == childctr) //sibling or cousin
         {
-            switch(ancestorctr)
+            if (ancestorctr == 1)
             {
-                case 1:
-                {
-                    return "sibling";
-                }
-                default:
-                {
-                    return path = getOrd(childctr - 1) + " cousin";
-                }
+                return "sibling";
             }
+            return getOrd(childctr - 1) + " cousin";
         }
 
         if(ancestorctr > childctr)
         {
-            switch(childctr)
-            {
-                case 1: //some type of aunt or uncle
+            //some type of cousin
+            if (childctr == 1)
+            { //some type of aunt or uncle
+                switch (ancestorctr) //dependent on type of grandparent
                 {
-                    switch(ancestorctr) //dependent on type of grandparent
+                    case 2: {
+                        return "aunt or uncle";
+                    }
+                    case 3: {
+                        return "great aunt or uncle";
+                    }
+                    case 4: {
+                        return "great grand aunt or uncle"; //this is a unique case idk why family trees are weird
+                    }
+                    default: //great +
                     {
-                        case 2:
-                        {
-                            return "aunt or uncle";
-                        }
-                        case 3:
-                        {
-                            return "great aunt or uncle";
-                        }
-                        case 4:
-                        {
-                            return "great grand aunt or uncle"; //this is a unique case idk why family trees are weird
-                        }
-                        default: //great +
-                        {
-                            path = String.format("great^%d ", ancestorctr - 3);
-                            return path + "grand aunt or uncle";
-                        }
+                        path = String.format("great^%d ", ancestorctr - 3);
+                        return path + "grand aunt or uncle";
                     }
                 }
-                default: //some type of cousin
-                {
-                    //dependent on childctr, if childctr == 2 then first cousin, 3 is second
-                    //times removed is ancestorctr - childctr
-                    return path = getOrd(childctr - 1) + String.format(" cousin %d time(s) removed", ancestorctr - childctr);
-                }
-            }
+            }//dependent on childctr, if childctr == 2 then first cousin, 3 is second
+            //times removed is ancestorctr - childctr
+            return getOrd(childctr - 1) + String.format(" cousin %d time(s) removed", ancestorctr - childctr);
         }
 
-        if(ancestorctr < childctr)
-        {
-            switch(ancestorctr)
+        //some type of cousin, last case
+        if (ancestorctr == 1)
+        { //some type of niece or nephew
+            switch (childctr)
             {
-                case 1: //some type of niece or nephew
+                case 2:
                 {
-                    switch(childctr)
+                    return "niece or nephew";
+                }
+                case 3:
+                {
+                    return "grand niece or nephew";
+                }
+                default: //great +
+                {
+                    if (childctr > 4)
                     {
-                        case 2:
-                        {
-                            return "niece or nephew";
-                        }
-                        case 3:
-                        {
-                            return "grand niece or nephew";
-                        }
-                        default: //great +
-                        {
-                            if(childctr > 4)
-                            {
-                                path = String.format("great^%d ", childctr - 3);
-                            }
-                            else
-                            {
-                                for(int i = 0; i < childctr - 3; i++)
-                                {
-                                    path = "great " + path;
-                                }
-                            }
-                            return path + "grand niece or nephew";
+                        path = String.format("great^%d ", childctr - 3);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < childctr - 3; i++) {
+                            path = "great " + path;
                         }
                     }
-                }
-                default: //some type of cousin
-                {
-                    //dependent on ancestorctr, if ancestorctr == 2 then first cousin, 3 is second
-                    //times removed is childctr - ancestorctr
-                    return path = getOrd(ancestorctr - 1) + String.format(" cousin %d time(s) removed", childctr - ancestorctr);
+                    return path + "grand niece or nephew";
                 }
             }
-        }
+        }//dependent on ancestorctr, if ancestorctr == 2 then first cousin, 3 is second
+        //times removed is childctr - ancestorctr
+        return getOrd(ancestorctr - 1) + String.format(" cousin %d time(s) removed", childctr - ancestorctr);
 
 
-        return path;
     }
 
 
