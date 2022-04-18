@@ -3,15 +3,19 @@ package edu.templ.usbfamilytree;
 import java.util.*;
 
 
-/*Graph contains all the underlying functions necessary
-*to make the family tree program work. Adding nodes, edges,
-*performing searches*/
+
+/**
+ * Graph contains all the underlying functions necessary
+ * to make the family tree program work. Adding nodes, edges,
+ * performing searches
+ */
 public class Graph
 {
-    /*nodes arraylist will contain all nodes, node id corresponds to position in arraylist
-    *Adj is the adjacency list for the bidirectional graph
-    *id contains the incrementation of the ids of the nodes as new nodes are created
-    * */
+    /**
+     * nodes arraylist will contain all nodes, node id corresponds to position in arraylist
+     * Adj is the adjacency list for the bidirectional graph
+     * id contains the incrementation of the ids of the nodes as new nodes are created
+     */
 
     public ArrayList<Node> nodes = new ArrayList<>();
     public LinkedList<LinkedList<Integer>> Adj = new LinkedList<>(); // adjacency list
@@ -20,9 +24,12 @@ public class Graph
         id = 0;
     }
 
-    /*addNode creates a node, adding it to the nodes arraylist
-    *and incrementing the id as its id is set to the current id
-    * */
+    /**
+     * addNode creates a node, adding it to the nodes arraylist
+     * and incrementing the ID as its ID is set to the current ID
+     * @param person nodes contain the Person themselves
+     * @return returns the node after it's been created
+     */
     public Node addNode(Person person)
     {
         //node id should be same as position in arraylist
@@ -32,10 +39,15 @@ public class Graph
         return node;
     }
 
-    /*taking the IDs as well as the relationship enum
-    *the function creates edges that are stored in the
-    *Nodes themselves as well as adding it to the adjacency list
-    *within the Graph class itself */
+    /**
+     * Taking the IDs as well as the relationship enum,
+     * the function creates edges that are stored in the
+     * Nodes themselves as well as adding it to the adjacency list
+     * within the Graph class itself.
+     * @param src start node id
+     * @param dest end node id
+     * @param relationship relationship between start and end
+     */
     public void addNewEdge(int src, int dest, Edge.Relationship relationship)
     {
         Node source = nodes.get(src);
@@ -101,9 +113,13 @@ public class Graph
         }
     }
 
-    /*This BFS searches just one iteration at a time,
-    *adding only immediate neighbors to the queue then stopping*/
-
+    /**
+     * This BFS searches just one iteration at a time,
+     * adding only immediate neighbors to the queue then stopping
+     * @param queue contains the queue of neighbors or nodes we need to visit
+     * @param visited boolean array to know whether a node has been visited
+     * @param path contains the path taken as we move from node to node
+     */
     void BFS(ArrayList<Integer> queue, boolean[] visited, int[] path)
     {
         //pop
@@ -123,11 +139,16 @@ public class Graph
         }
     }
 
-    /*Bidirectional implements a bidirectional search
-    *which basically does a BFS from the end node
-    *and the start node one at a time searching for
-    *the intersecting point, then returning the node
-    *path from one node to the other*/
+    /**
+     * Bidirectional implements a bidirectional search
+     * which basically does a BFS from the end node
+     * and the start node one at a time searching for
+     * the intersecting point, then returning the node
+     * path from one node to the other
+     * @param start ID of starting node
+     * @param end ID of ending node
+     * @return returns integer array list of the path of nodes
+     */
     ArrayList<Integer> Bidirectional(int start, int end)
     {
         ArrayList<Integer> retpath = new ArrayList<>();
@@ -213,10 +234,17 @@ public class Graph
         return retpath;
     }
 
-    /*part of the bidirectional search is finding the
-    *intersection or closest node between two nodes
-    *so this can also be used to find the closes relative
-    *between two nodes. takes in two IDs and returns an ID*/
+    /**/
+
+    /**
+     * Part of the bidirectional search is finding the
+     * intersection or closest node between two nodes.
+     * This can also be used to find the closes relative
+     * between two nodes. takes in two IDs and returns an ID
+     * @param start starting node ID
+     * @param end ending node ID
+     * @return returns integer ID of the closest shared node (relative) between start and end
+     */
     int closestRelative(int start, int end)
     {
 
@@ -267,8 +295,15 @@ public class Graph
     }
 
 
-    /*Takes the ID arraylist from Bidirectional and converts it to
-    *a string array that contains the edge types*/
+    /**/
+
+    /**
+     * Takes the Node ID arraylist from Bidirectional and converts it to
+     * a string array that contains the edge types.
+     * @param s takes start node ID
+     * @param d takes end node ID
+     * @return String array of edges, or edge path from source to destination
+     */
     String[] getNodeEdge(int s, int d)
     {
         //edges is a list of INTEGER IDs
@@ -312,6 +347,13 @@ public class Graph
 
     /*gets ordinal number given an integer
     *for better readability in the findRelationship*/
+
+    /**
+     * gets ordinal number given an integer
+     * for better readability in the findRelationship
+     * @param n any integer
+     * @return String of ordinal form of int
+     */
     String getOrd(int n)
     {
         int m100 = n % 100;
@@ -334,11 +376,20 @@ public class Graph
         }
     }
 
-    /*takes two IDs and performs a BFS
-    *then gets their edge relationships
-    *and traverses each edge type to find
-    *the relationship between the start and end
-    *nodes*/
+    /**/
+
+    /**
+     * Takes two IDs and performs a BFS
+     * then gets their edge relationships
+     * and traverses each edge type to find
+     * the relationship between the start and end
+     * nodes, then prints out the relationship
+     * given the types of relationships between
+     * each person passed.
+     * @param s starting node
+     * @param d destination node
+     * @return String of the relationship, for example "child" or "1st cousing 2 time(s) removed"
+     */
     String findRelationship(int s, int d)
     {
         String path = "";

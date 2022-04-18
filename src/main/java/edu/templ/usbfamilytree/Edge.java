@@ -2,8 +2,11 @@ package edu.templ.usbfamilytree;
 
 public class Edge
 {
-    //Each edge will have a type of either marital, ancestor, or descendant
-    //the edge will also contain data about who the edge links TO
+    /**
+     * Each edge will have a type of either marital, ancestor, or descendant
+     * the edge will also contain data about who the edge links TO
+     */
+
     public Relationship relationship;
     public int id;
 

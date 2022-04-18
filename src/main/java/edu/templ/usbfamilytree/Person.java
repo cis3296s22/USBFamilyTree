@@ -4,7 +4,9 @@ import com.google.gson.JsonSyntaxException;
 
 public class Person
 {
-    //Each Person will store their name, DOB, occupation, eye color, and height
+    /**
+     * Each Person will store their name, DOB, occupation, eye color, and height
+     */
     public String name;
     public String dateOfBirth;
     public String occupation;
