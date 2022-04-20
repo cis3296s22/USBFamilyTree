@@ -1,6 +1,3 @@
-/**
- * Controller for Person Stage
- */
 package edu.templ.usbfamilytree;
 
 import javafx.fxml.FXML;
@@ -18,6 +15,9 @@ import javafx.stage.Stage;
 
 import java.io.File;
 
+/**
+ * Controller for Person Stage
+ */
 public class PersonController {
     public Button chooseImageButton;        //reference to image button in FXML
     public ImageView imageView;             //reference to ImageView in FXML
@@ -31,10 +31,17 @@ public class PersonController {
 
     //Strings that will contain information passed into
     private String name, birthday, occupation, eyeColor, height, filePath;
-    //scene called from another stage
+    /**
+     * Scene for this stage
+     */
     static Scene scene;
-    //File chooser object created
+    /**
+     * FXML filechooser object
+     */
     private FileChooser fileChooser;
+    /**
+     *  File to store persons selected familiy member and extract directory information from
+     */
     private File file;
 
 

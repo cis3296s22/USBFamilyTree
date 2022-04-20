@@ -1,7 +1,3 @@
-/**
- *  Main Controller class that controls all actions performed in the primary stage
- */
-
 package edu.templ.usbfamilytree;
 
 import javafx.fxml.FXML;
@@ -18,6 +14,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import java.io.File;
+
+/**
+ *  Main Controller class that controls all actions performed in the primary stage
+ */
 
 public class DashboardController {
     /**
