@@ -3,7 +3,7 @@ package edu.templ.usbfamilytree;
 import com.google.gson.JsonSyntaxException;
 
 /**
- * Contains all of the variables and methods associated with a Person
+ * Contains all the variables and methods associated with a Person
  */
 public class Person
 {

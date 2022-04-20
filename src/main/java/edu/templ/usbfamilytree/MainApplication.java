@@ -1,6 +1,3 @@
-/**
- *  Class that contains main method. Starts JavaFX application by extending application and overriding the start method.
- */
 package edu.templ.usbfamilytree;
 
 import javafx.application.Application;
@@ -8,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ *  Class that contains main method. Starts JavaFX application by extending application and overriding the start method.
+ */
 public class MainApplication extends Application {
     /**
      * Overridden function that starts the JavaFX GUI
