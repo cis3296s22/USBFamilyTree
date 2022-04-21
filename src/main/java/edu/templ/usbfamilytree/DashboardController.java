@@ -47,6 +47,8 @@ public class DashboardController {
     public ToggleButton editTButton; //Reference to toggle button in scene
     public Label relative_output; // reference to the closest relative label
 
+    public String[] menuOptions = {"ADD: Child Relationship", "ADD: Parent Relationship", "ADD: Marriage Relationship"};
+
     /**
      *  Constructor - initializes graph, and file to default image in project directory
      */
@@ -94,13 +96,35 @@ public class DashboardController {
     private void initializeMenu() {
         //initiate a new contextMenu
         canvasMenu = new ContextMenu();
-        //initiate a new menu item
-        MenuItem item1 = new MenuItem();
-        //fill in its text
-        item1.setText("Add a new person");
+
         //set its onclick event
-        item1.setOnAction(actionEvent -> showNodeCreationStage());
-        canvasMenu.getItems().addAll(item1);
+        for (String menuOption : menuOptions) {
+            MenuItem item = new MenuItem(menuOption);
+            item.setId(menuOption);
+            item.setOnAction(actionEvent -> menuOptionClicked(item.getId()));
+            canvasMenu.getItems().add(item);
+        }
+    }
+
+    private void menuOptionClicked(String id) {
+        System.out.println(id + " was pressed");
+
+
+        //All of the following methods can only be called on nodes
+        if(id.equals(menuOptions[0])){
+            //Setup child connection
+            System.out.println(menuOptions[0]);
+        }
+        else if(id.equals(menuOptions[1])){
+            //Setup parent connection
+            System.out.println(menuOptions[1]);
+
+        }
+        else if(id.equals(menuOptions[2])){
+            System.out.println(menuOptions[2]);
+
+        }
+
     }
 
     /**
@@ -112,17 +136,23 @@ public class DashboardController {
     @FXML
     private void onMainScreenClicked(MouseEvent mouseEvent) {
         //whenever the screen(anchor-pane) is clicked on this event is run
-        if (mouseEvent.getButton() == MouseButton.PRIMARY){
-            //if the canvas is showing remove it from the screen
-            if(canvasMenu.isShowing()){
-                canvasMenu.hide();
+        if(editTButton.isSelected()) {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                //if the canvas is showing remove it from the screen
+                if (canvasMenu.isShowing()) {
+                    canvasMenu.hide();
+                }
+                double x = mouseEvent.getX();
+                double y = mouseEvent.getY();
+                showNodeCreationStage(x, y);
+
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                //save the location of where the user clicked on the anchor pane
+//                xVal = mouseEvent.getX();
+//                yVal = mouseEvent.getY();
+//                //show the menu on the location clicked of the screen
+//                canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
             }
-        }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
-            //save the location of where the user clicked on the anchor pane
-            xVal = mouseEvent.getX();
-            yVal = mouseEvent.getY();
-            //show the menu on the location clicked of the screen
-            canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
         }
     }
 
@@ -219,14 +249,14 @@ public class DashboardController {
      *  Opens a new stage for user input of a new family member and adds the new member to a node, then to the graph object defined in this class.
      *
      */
-    private void showNodeCreationStage(){
+    private void showNodeCreationStage(double x, double y){
         try {
             PersonController controller = new PersonController().create();
             //returned from creation stage, everything except name can be null
             Person p = controller.Show();
             Node node =  graph.addNode(p);
             //if in the return the name is null (user clicked on X button to leave the screen, don't create a new view)
-            if (p.name != null) {anchorpane.getChildren().add(createLabel(node));}
+            if (p.name != null) {anchorpane.getChildren().add(createLabel(node, x, y));}
             System.out.println(FileUtils.toJson(node));
         }
         catch (Exception e) {
@@ -258,7 +288,7 @@ public class DashboardController {
      * @param node contains information retrieved from person controller
      * @return returns a Label that has its own custom properties and sets its user data to the information passed from node
      */
-    private Label createLabel(Node node){
+    private Label createLabel(Node node, double x, double y){
         //creating label, and setting text inside of label to person's name
         Label label = new Label(node.person.name);
 
@@ -270,8 +300,8 @@ public class DashboardController {
         label.setTextFill(Color.BLACK);
         label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
         label.setAlignment(Pos.BASELINE_CENTER);
-        label.setLayoutX(xVal-(Settings.LABEL_WIDTH/2));
-        label.setLayoutY(yVal-(Settings.LABEL_HEIGHT/2));
+        label.setLayoutX(x-(Settings.LABEL_WIDTH/2));
+        label.setLayoutY(y-(Settings.LABEL_HEIGHT/2));
 
         //onclick function
         label.setOnMouseClicked(this::onLabelClicked);
@@ -288,6 +318,7 @@ public class DashboardController {
     private void onLabelClicked(MouseEvent mouseEvent) {
         //IN VIEW MODE
         Label newLabel = (Label) mouseEvent.getSource();
+        canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
         if(!editTButton.isSelected()) {
 
             if (selectedLabel == null) {
