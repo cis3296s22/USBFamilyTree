@@ -44,5 +44,13 @@ public class Node
         edges.add(new Edge(relationship, id));
     }
 
+    public boolean isMarried() {
+        for (Edge e : edges) {
+            if (e.relationship == Edge.Relationship.marital) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

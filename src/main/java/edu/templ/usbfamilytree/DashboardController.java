@@ -1,5 +1,6 @@
 package edu.templ.usbfamilytree;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,9 +31,8 @@ public class DashboardController {
     private Graph graph;
 
     private final File file;        //stores reference to default image in project directory
-    private Label selectedLabel;    //storing reference to a label after it is clicked
+    private Label primarySelected;    //storing reference to a label after it is clicked
     private Label secondLabel;      //storing reference to a label after the first is stored
-    private double xVal, yVal;      //defined variables for saving location of last screen click
 
     //FXML related fields
     public Label rel_output;  //relationship output
@@ -46,6 +46,11 @@ public class DashboardController {
     public AnchorPane anchorpane;   //reference to anchor pane (area where we are adding nodes)
     public ToggleButton editTButton; //Reference to toggle button in scene
     public Label relative_output; // reference to the closest relative label
+
+    boolean connection = false;
+    boolean marriage = false;
+    boolean parent = false;
+    boolean descendant = false;
 
     public String[] menuOptions = {"ADD: Child Relationship", "ADD: Parent Relationship", "ADD: Marriage Relationship"};
 
@@ -101,19 +106,25 @@ public class DashboardController {
         for (String menuOption : menuOptions) {
             MenuItem item = new MenuItem(menuOption);
             item.setId(menuOption);
-            item.setOnAction(actionEvent -> menuOptionClicked(item.getId()));
+            item.setOnAction(actionEvent -> menuOptionClicked(actionEvent, item.getId()));
             canvasMenu.getItems().add(item);
         }
     }
 
-    private void menuOptionClicked(String id) {
-        System.out.println(id + " was pressed");
-
-
+    private void menuOptionClicked(ActionEvent event, String id) {
+        System.out.println(((MenuItem)event.getSource()).getParentPopup().getOwnerNode());
+        //person label that item menu was triggered on
+        Label currentLabel = (Label) ((MenuItem)event.getSource()).getParentPopup().getOwnerNode();
+        Node node = (Node) currentLabel.getUserData();
         //All of the following methods can only be called on nodes
         if(id.equals(menuOptions[0])){
             //Setup child connection
             System.out.println(menuOptions[0]);
+            System.out.println("Setting up child connection");
+            descendant = true;
+            setSelected(currentLabel);
+            primarySelected = currentLabel;
+            connection = true;
         }
         else if(id.equals(menuOptions[1])){
             //Setup parent connection
@@ -121,8 +132,17 @@ public class DashboardController {
 
         }
         else if(id.equals(menuOptions[2])){
-            System.out.println(menuOptions[2]);
-
+            //setup marriage connection
+            if(node.isMarried()){
+                System.out.println("cannot add a second marriage connection");
+            }
+            else {
+                System.out.println("Setting up marriage connection");
+                marriage = true;
+                setSelected(currentLabel);
+                primarySelected = currentLabel;
+                connection = true;
+            }
         }
 
     }
@@ -136,24 +156,18 @@ public class DashboardController {
     @FXML
     private void onMainScreenClicked(MouseEvent mouseEvent) {
         //whenever the screen(anchor-pane) is clicked on this event is run
-        if(editTButton.isSelected()) {
             if (mouseEvent.getButton() == MouseButton.PRIMARY) {
-                //if the canvas is showing remove it from the screen
                 if (canvasMenu.isShowing()) {
                     canvasMenu.hide();
                 }
-                double x = mouseEvent.getX();
-                double y = mouseEvent.getY();
-                showNodeCreationStage(x, y);
 
-            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                //save the location of where the user clicked on the anchor pane
-//                xVal = mouseEvent.getX();
-//                yVal = mouseEvent.getY();
-//                //show the menu on the location clicked of the screen
-//                canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+                if(editTButton.isSelected() && mouseEvent.isControlDown()) {
+                    //if the canvas is showing remove it from the screen
+                    double x = mouseEvent.getX();
+                    double y = mouseEvent.getY();
+                    showNodeCreationStage(x, y);
+                }
             }
-        }
     }
 
     /**
@@ -165,7 +179,7 @@ public class DashboardController {
     private void addMaritalRelationship(Label label) {
         // marital only
         //align parents to left YLayout-location
-        Node node1 = (Node)selectedLabel.getUserData(); // parent 1
+        Node node1 = (Node) primarySelected.getUserData(); // parent 1
         Node node2 = (Node)label.getUserData(); // parent 2
         graph.addNewEdge(node1.id, node2.id, Edge.Relationship.marital);
         ParentContainer parentContainer = new ParentContainer();
@@ -173,25 +187,25 @@ public class DashboardController {
         parentContainer.addParent(node2);
 
         System.out.println(FileUtils.toJson(graph));
-        label.setLayoutY(selectedLabel.getLayoutY());
+        label.setLayoutY(primarySelected.getLayoutY());
 
         //Create new line (marriage/parents line only horizontal)
-        double y = selectedLabel.getLayoutY()+ Settings.LABEL_HEIGHT/2;
-        double startX = selectedLabel.getLayoutX()+Settings.LABEL_WIDTH;
+        double y = primarySelected.getLayoutY()+ Settings.LABEL_HEIGHT/2;
+        double startX = primarySelected.getLayoutX()+Settings.LABEL_WIDTH;
         label.setLayoutX(startX + Settings.MARITAL_EDGE_LENGTH);
         double endX = label.getLayoutX();
 
         Line line = new Line(startX, y, endX, y);
         line.setStrokeWidth(4);
         line.setCursor(Cursor.HAND);
-        line.setOnMouseClicked(this::addChildRelationship);
+        line.setOnMouseClicked(this::onLineClicked);
         line.setUserData(parentContainer);
 
         //add it to parent hierarchy
         anchorpane.getChildren().add(line);
 
         //deselect both
-        setUnselected(selectedLabel);
+        setUnselected(primarySelected);
     }
 
     /**
@@ -200,49 +214,54 @@ public class DashboardController {
      *
      * @param mouseEvent is the event that is passed on from user input. Can extract what type of mouse event was triggered from this.
      */
-    private void addChildRelationship(MouseEvent mouseEvent) {
+    private void onLineClicked(MouseEvent mouseEvent) {
+        Line selectedLine = (Line)mouseEvent.getSource();
+        ParentContainer parentContainer = (ParentContainer) selectedLine.getUserData();
+        Node child = (Node) primarySelected.getUserData();
+
+
         if(editTButton.isSelected()){
-            if(selectedLabel != null){ // the child
-                //extract current line
-                Line selectedLine = (Line)mouseEvent.getSource();
-                //extract parent container from line
-                ParentContainer parentContainer = (ParentContainer) selectedLine.getUserData();
-                Node child = (Node)selectedLabel.getUserData();
-
-                //iterating through parents in parentContainer and adding an edge between parents and new child
-                for (Node parent: parentContainer.getParents()) {
-                    graph.addNewEdge(parent.id, child.id, Edge.Relationship.ancestor);
-                }
-                //printing out graph
-                System.out.println(FileUtils.toJson(graph));
-                //current children #
-                int childNum = parentContainer.getChildIndex();
-
-                double lineMiddleX = (selectedLine.getEndX() - selectedLine.getStartX())/2;
-                double labelCenterX = (lineMiddleX + selectedLine.getStartX() - Settings.LABEL_WIDTH/2);
-                //move label to corresponding location
-                selectedLabel.setLayoutY(selectedLine.getStartY() + Settings.CHILD_OFFSET);
-                if(childNum % 2 == 0){
-                    selectedLabel.setLayoutX((labelCenterX + ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * (childNum/2.0))));
-                }
-                else if (childNum % 2 == 1){
-                    selectedLabel.setLayoutX((labelCenterX - ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * ((childNum+1)/2.0))));
-                }
-                //get starting points for the line (top-center of label)
-                double startY = selectedLabel.getLayoutY();
-                double startX = selectedLabel.getLayoutX()+ Settings.LABEL_WIDTH/2;
-                //This is where the line is (end is the line that connects the parents
-                double endX = (lineMiddleX + selectedLine.getStartX());
-                double endY = selectedLine.getStartY();
-
-                Line line = new Line(startX, startY, endX, endY);
-                line.setStrokeWidth(2);
-                anchorpane.getChildren().add(line);
-                parentContainer.setChildIndex(parentContainer.getChildIndex()+1);
-                selectedLine.setUserData(parentContainer);
-                setUnselected(selectedLabel);
+            if(descendant && connection){
+                addChildRelationship(child, parentContainer, selectedLine);
+                descendant = false;
+                connection = false;
             }
         }
+    }
+
+    private void addChildRelationship(Node child, ParentContainer parentContainer, Line selectedLine) {
+        //iterating through parents in parentContainer and adding an edge between parents and new child
+        for (Node parent: parentContainer.getParents()) {
+            graph.addNewEdge(parent.id, child.id, Edge.Relationship.ancestor);
+        }
+        //printing out graph
+        System.out.println(FileUtils.toJson(graph));
+        //current children #
+        int childNum = parentContainer.getChildIndex();
+
+        double lineMiddleX = (selectedLine.getEndX() - selectedLine.getStartX())/2;
+        double labelCenterX = (lineMiddleX + selectedLine.getStartX() - Settings.LABEL_WIDTH/2);
+        //move label to corresponding location
+        primarySelected.setLayoutY(selectedLine.getStartY() + Settings.CHILD_OFFSET);
+        if(childNum % 2 == 0){
+            primarySelected.setLayoutX((labelCenterX + ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * (childNum/2.0))));
+        }
+        else if (childNum % 2 == 1){
+            primarySelected.setLayoutX((labelCenterX - ((Settings.LABEL_WIDTH + Settings.CHILDREN_PADDING) * ((childNum+1)/2.0))));
+        }
+        //get starting points for the line (top-center of label)
+        double startY = primarySelected.getLayoutY();
+        double startX = primarySelected.getLayoutX()+ Settings.LABEL_WIDTH/2;
+        //This is where the line is (end is the line that connects the parents
+        double endX = (lineMiddleX + selectedLine.getStartX());
+        double endY = selectedLine.getStartY();
+
+        Line line = new Line(startX, startY, endX, endY);
+        line.setStrokeWidth(2);
+        anchorpane.getChildren().add(line);
+        parentContainer.setChildIndex(parentContainer.getChildIndex()+1);
+        selectedLine.setUserData(parentContainer);
+        setUnselected(primarySelected);
     }
 
     /**
@@ -254,10 +273,12 @@ public class DashboardController {
             PersonController controller = new PersonController().create();
             //returned from creation stage, everything except name can be null
             Person p = controller.Show();
-            Node node =  graph.addNode(p);
+            if(p.name != null){
+                Node node =  graph.addNode(p);
+                anchorpane.getChildren().add(createLabel(node, x, y));
+                System.out.println(FileUtils.toJson(node));
+            }
             //if in the return the name is null (user clicked on X button to leave the screen, don't create a new view)
-            if (p.name != null) {anchorpane.getChildren().add(createLabel(node, x, y));}
-            System.out.println(FileUtils.toJson(node));
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -278,7 +299,8 @@ public class DashboardController {
      */
     private void setUnselected(Label label){
         label.setBackground(new Background(new BackgroundFill(Color.LIGHTSTEELBLUE, new CornerRadii(0), new Insets(0))));
-        if (label ==  selectedLabel) {selectedLabel = null;}
+        if (label == primarySelected) {
+            primarySelected = null;}
         else secondLabel = null;
     }
 
@@ -316,52 +338,37 @@ public class DashboardController {
      * @param mouseEvent is the event that is passed on from user input. Can extract what type of mouse event was triggered from this.
      */
     private void onLabelClicked(MouseEvent mouseEvent) {
+        Label currentLabel = (Label) mouseEvent.getSource();
+        Node node = (Node)currentLabel.getUserData();
         //IN VIEW MODE
-        Label newLabel = (Label) mouseEvent.getSource();
-        canvasMenu.show(anchorpane, mouseEvent.getScreenX(), mouseEvent.getScreenY());
         if(!editTButton.isSelected()) {
 
-            if (selectedLabel == null) {
-                //pull what was clicked on and set it to currently selected label
-                selectedLabel = newLabel;
-                setSelected(selectedLabel);
-            }
-            //if we currently already chose a label to view info about
-            else {
-                if(secondLabel != null){
-                    setUnselected(selectedLabel);
-                    setUnselected(secondLabel);
-                    updateRelationship();
-                    setSelected(newLabel);
-                    selectedLabel = newLabel;
-                }
-                //if the one we clicked is the same as the previously clicked one, then deselect it
-                else if (selectedLabel != newLabel) {
-                    //if the user clicks on the same label, we unselect
-//                    setUnselected(selectedLabel);
-                    secondLabel = newLabel;
-                    setSelected(secondLabel);
-                    updateRelationship();
-                }
-                else {
-                    setUnselected(selectedLabel);
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                if (primarySelected == null) {
+                    //pull what was clicked on and set it to currently selected label
+                    primarySelected = currentLabel;
+                    setSelected(currentLabel);
                 }
             }
             updateSidePanel();
         }
         //IN EDIT MODE
         else {
-            if (selectedLabel == null) {
-                //pull what was clicked on and set it to currently selected label
-                selectedLabel = (Label) mouseEvent.getSource();
-                setSelected(selectedLabel);
-            } else {
-                if (selectedLabel == newLabel) {
-                    //if the user clicks on the same label, we unselect
-                    setUnselected(selectedLabel);
-                }
-                else{
-                    addMaritalRelationship(newLabel);
+            if(mouseEvent.getButton() == MouseButton.SECONDARY){
+                canvasMenu.show(currentLabel, mouseEvent.getScreenX(), mouseEvent.getScreenY());
+            }
+            if(mouseEvent.getButton() == MouseButton.PRIMARY && connection){
+                if(marriage) {
+                    if (!node.isMarried()) {
+                        addMaritalRelationship(currentLabel);
+                        marriage = false;
+                        connection = false;
+                    } else {
+                        System.out.println("cannot marry, second person is alread in a marital relationship");
+                        marriage = false;
+                        connection = false;
+                        setUnselected(primarySelected);
+                    }
                 }
             }
         }
@@ -371,8 +378,8 @@ public class DashboardController {
      *  Updates GUI relation labels depending on the current status of the selected labels
      */
     private void updateRelationship() {
-        if(selectedLabel != null && secondLabel != null){
-            Node personOne = (Node)selectedLabel.getUserData();
+        if(primarySelected != null && secondLabel != null){
+            Node personOne = (Node) primarySelected.getUserData();
             Node personTwo = (Node)secondLabel.getUserData();
 
             String relationship = graph.findRelationship(personOne.id, personTwo.id);
@@ -392,8 +399,8 @@ public class DashboardController {
      *  Updates GUI side panel on currently selected label
      */
     private void updateSidePanel() {
-        if(selectedLabel != null) {
-            Node node = (Node)selectedLabel.getUserData();
+        if(primarySelected != null) {
+            Node node = (Node) primarySelected.getUserData();
             Person currentPerson = node.person;
             name_label.setText(currentPerson.name);
             occ_label.setText(currentPerson.occupation);
@@ -425,9 +432,9 @@ public class DashboardController {
     @FXML
     private void toggleButtonPressed() {
         //if label is not null (something is selected)
-        if(selectedLabel != null){
+        if(primarySelected != null){
             //unselect it
-            setUnselected(selectedLabel);
+            setUnselected(primarySelected);
             //update side panel
             updateSidePanel();
         }
